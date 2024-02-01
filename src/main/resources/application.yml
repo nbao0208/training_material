@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: p0stgr3sp4ssw0rd
+    url: jdbc:postgresql://localhost:5433/training_material
+    username: postgres_user
+  jpa:
+    hibernate:
+      ddl-auto: create
+  flyway:
+    enabled: true
