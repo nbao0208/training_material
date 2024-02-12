@@ -17,6 +17,7 @@ public class RequestCorrelation {
 
   private static final InheritableThreadLocal<String> api = new InheritableThreadLocal<>();
   private static final InheritableThreadLocal<String> ip = new InheritableThreadLocal<>();
+  private static final InheritableThreadLocal<String> screenName = new InheritableThreadLocal<>();
 
   private static final InheritableThreadLocal<OffsetDateTime> requestTimeStamp =
       new InheritableThreadLocal<>();
@@ -213,5 +214,9 @@ public class RequestCorrelation {
   /** Remove Ip, thread safe */
   public static void unloadIp() {
     ip.remove();
+  }
+
+  public static void setScreenName(String requestScreenName) {
+    screenName.set(requestScreenName);
   }
 }
