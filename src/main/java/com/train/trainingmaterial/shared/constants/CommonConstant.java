@@ -37,4 +37,9 @@ public class CommonConstant {
   public static final String CORRELATION_ID_HEADER = "X-Correlation-Id";
   public static final String USER_ID_HEADER = "X-User-Id";
   public static final String REF_NO_HEADER = "X-Ref-No";
+  public static final String REQUEST_SCREEN_NAME = "requestScreenName";
+  public static final String REQUEST_CONTENT_TYPE = "requestContentType";
+  public static final String REQUEST_USER_AGENT = "requestUserAgent";
+  public static final String USER_AGENT_HEADER = "User-Agent";
+  public static final String SCREEN_NAME_HEADER = "X-Screen-Name";
 }
