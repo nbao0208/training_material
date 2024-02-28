@@ -1,9 +1,17 @@
 package com.train.trainingmaterial.model.user;
 
+import java.time.LocalDate;
 import lombok.*;
 
+@RequiredArgsConstructor
 @Getter
 @Setter
-@ToString
-@Builder
-public class User {}
+public class User {
+  private Long Id;
+  private String firstName;
+  private String middleName;
+  private String lastName;
+  private String nationalId;
+  private String address;
+  private LocalDate dob;
+}

@@ -1,8 +1,12 @@
 package com.train.trainingmaterial.dao;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import com.train.trainingmaterial.entity.UserEntity;
+import java.util.List;
+import org.springframework.stereotype.Service;
 
-@Data
-@RequiredArgsConstructor
-public class UserDao {}
+@Service
+public interface UserDao {
+  List<UserEntity> getAllUser();
+
+  void insertUser(UserEntity userEntity);
+}

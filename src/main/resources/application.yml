@@ -1,11 +1,12 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: p0stgr3sp4ssw0rd
+    password: baoisamazing
     url: jdbc:postgresql://localhost:5433/training_material
-    username: postgres_user
+    username: baonguyen
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
+    show-sql: true
   flyway:
     enabled: true

@@ -1,19 +1,17 @@
 package com.train.trainingmaterial.model.request.user;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class AddUserRequest {
-  @NotBlank private String fullName;
-
-  @NotBlank private String age;
+  private String firstName;
+  private String middleName;
+  private String lastName;
+  private String dob;
+  private String address;
+  private String nationalID;
 }

@@ -1,10 +1,12 @@
 package com.train.trainingmaterial.dto;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.train.trainingmaterial.model.request.user.AddUserRequest;
+import com.train.trainingmaterial.model.response.user.GetAllUserResponse;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
-public class UserDto {}
+public interface UserDto {
+  GetAllUserResponse getAllUser();
+
+  Boolean createUser(AddUserRequest request);
+}

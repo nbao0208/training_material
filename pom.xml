@@ -36,6 +36,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        
 
         <!-- PostgreSQL database -->
         <dependency>
@@ -268,7 +269,28 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>9.16.3</version>
+                <configuration>
+                   <url>jdbc:postgresql://localhost:5433/training_material</url>
+                    <user>baonguyen</user>
+                    <password>baoisamazing</password>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>123</id>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>
