@@ -1,4 +1,4 @@
-package com.train.trainingmaterial.model.response;
+package com.train.trainingmaterial.model.response.user;
 
 import lombok.*;
 
@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class AddUserResponse {
   private boolean success;
 }

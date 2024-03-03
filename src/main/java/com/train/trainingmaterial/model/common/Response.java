@@ -16,5 +16,5 @@ public class Response<TData> {
 
   private TData data;
 
-  //  private ResponseError error;
+  private ResponseError error;
 }

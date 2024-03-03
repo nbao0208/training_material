@@ -1,17 +1,21 @@
 package com.train.trainingmaterial.model.request.user;
 
-import lombok.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-@Builder
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-public class AddUserRequest {
-  private String firstName;
-  private String middleName;
-  private String lastName;
-  private String dob;
-  private String address;
-  private String nationalID;
+@EqualsAndHashCode(callSuper = false)
+public class AddUserRequest extends BaseUserRequest {
+
+  public AddUserRequest(
+      Long id,
+      @NotNull String firstName,
+      @NotNull String middleName,
+      @NotNull String lastName,
+      @NotNull String dob,
+      @NotNull String address,
+      @NotNull String nationalId) {
+    super(id, firstName, middleName, lastName, dob, address, nationalId);
+  }
 }

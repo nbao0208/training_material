@@ -4,13 +4,15 @@ import com.train.trainingmaterial.dao.UserDao;
 import com.train.trainingmaterial.dto.UserDto;
 import com.train.trainingmaterial.entity.UserEntity;
 import com.train.trainingmaterial.model.request.user.AddUserRequest;
+import com.train.trainingmaterial.model.request.user.BaseUserRequest;
+import com.train.trainingmaterial.model.request.user.UpdateUserRequest;
 import com.train.trainingmaterial.model.response.user.GetAllUserResponse;
 import com.train.trainingmaterial.model.response.user.UserDetailResponse;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -22,34 +24,57 @@ public class UserDtoImpl implements UserDto {
   @Override
   public GetAllUserResponse getAllUser() {
     List<UserDetailResponse> userDetails = new ArrayList<>();
-    for (UserEntity user : userDao.getAllUser()) {
-      userDetails.add(
-          UserDetailResponse.builder()
-              .fullName(
-                  user.getFirst_name() + " " + user.getMiddle_name() + " " + user.getLast_name())
-              .age(Period.between(user.getDob(), LocalDate.now()).getYears())
-              .nationalId(user.getNational_id())
-              .build());
+    List<UserEntity> userEntities = this.userDao.getAllUser();
+
+    for (UserEntity user : userEntities) {
+      userDetails.add(this.toUserDetailResponse(user));
     }
-    return new GetAllUserResponse(Long.valueOf(userDetails.size()), userDetails);
+
+    return GetAllUserResponse.builder().total(userDetails.size()).userDetails(userDetails).build();
+  }
+
+  private UserDetailResponse toUserDetailResponse(UserEntity userEntity) {
+    return UserDetailResponse.builder()
+        .fullName(
+            this.toFullName(
+                userEntity.getFirstName(), userEntity.getMiddleName(), userEntity.getLastName()))
+        .age(this.toAge(userEntity.getDob()))
+        .nationalId(userEntity.getNationalId())
+        .build();
+  }
+
+  private String toFullName(String firstName, String middleName, String lastName) {
+    return firstName + " " + middleName + " " + lastName;
+  }
+
+  private int toAge(LocalDate dob) {
+    return Period.between(dob, LocalDate.now()).getYears();
   }
 
   @Override
-  public Boolean createUser(AddUserRequest request) {
-    userDao.insertUser(
-        UserEntity.builder()
-            .first_name(request.getFirstName())
-            .middle_name(request.getMiddleName())
-            .last_name(request.getLastName())
-            .national_id(request.getNationalID())
-            .address(request.getAddress())
-            .dob(LocalDate.parse(request.getDob()))
-            .created(OffsetDateTime.now())
-            .modified(OffsetDateTime.now())
-            .created_by("Bao Nguyen")
-            .modified_by("Bao Nguyen")
-            .is_deleted(false)
-            .build());
+  public boolean createUser(AddUserRequest request) {
+    userDao.insertUser(this.requestToUserEntity(request));
     return true;
+  }
+
+  @Override
+  public boolean updateUser(UpdateUserRequest request, Long userId) {
+    return userDao.updateUser(this.requestToUserEntity(request), userId);
+  }
+
+  @Override
+  public boolean deleteUser(Long userId){
+    return userDao.deleteUser(userId);
+  }
+
+  private <T extends BaseUserRequest> UserEntity requestToUserEntity(T request) {
+    return UserEntity.builder()
+        .firstName(request.getFirstName())
+        .middleName(request.getMiddleName())
+        .lastName(request.getLastName())
+        .nationalId(request.getNationalID())
+        .address(request.getAddress())
+        .dob(request.getDob() != null ? LocalDate.parse(request.getDob()) : null)
+        .build();
   }
 }
