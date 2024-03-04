@@ -7,7 +7,6 @@ import com.train.trainingmaterial.model.response.user.AddUserResponse;
 import com.train.trainingmaterial.model.response.user.DeleteUserResponse;
 import com.train.trainingmaterial.model.response.user.GetAllUserResponse;
 import com.train.trainingmaterial.model.response.user.UpdateUserResponse;
-import com.train.trainingmaterial.shared.exception.NullValueException;
 import org.springframework.stereotype.Service;
 
 @Service

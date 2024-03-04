@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class DeleteTagResponse {
-    private boolean success;
+  private boolean success;
 }

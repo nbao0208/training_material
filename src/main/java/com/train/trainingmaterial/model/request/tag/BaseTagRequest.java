@@ -9,6 +9,6 @@ import lombok.*;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class BaseTagRequest {
-    private int level;
-    private String substance;
+  private int level;
+  private String substance;
 }

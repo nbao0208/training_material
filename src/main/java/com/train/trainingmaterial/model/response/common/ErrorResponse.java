@@ -17,4 +17,3 @@ public class ErrorResponse {
 
   private ResponseError error;
 }
-

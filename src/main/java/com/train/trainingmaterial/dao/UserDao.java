@@ -2,7 +2,6 @@ package com.train.trainingmaterial.dao;
 
 import com.train.trainingmaterial.entity.UserEntity;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 @Service

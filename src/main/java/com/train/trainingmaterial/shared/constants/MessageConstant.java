@@ -26,4 +26,3 @@ public class MessageConstant {
   public static final String CATEGORY_NOT_EXISTED = "Category not existed";
   public static final String CATEGORY_X_NOT_EXISTED = "Category %s not existed";
 }
-

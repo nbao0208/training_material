@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class UpdateTagResponse {
-    private boolean success;
+  private boolean success;
 }

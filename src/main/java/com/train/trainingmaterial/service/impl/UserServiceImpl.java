@@ -10,8 +10,6 @@ import com.train.trainingmaterial.model.response.user.GetAllUserResponse;
 import com.train.trainingmaterial.model.response.user.UpdateUserResponse;
 import com.train.trainingmaterial.service.UserService;
 import java.util.UUID;
-
-import com.train.trainingmaterial.shared.exception.NullValueException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Response<GetAllUserResponse> getAllUser() {
-    return Response.<GetAllUserResponse>builder().id(UUID.randomUUID().toString()).data(userDto.getAllUser()).build();
+    return Response.<GetAllUserResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(userDto.getAllUser())
+        .build();
   }
 
   @Override
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Response<DeleteUserResponse> deleteUser(Long userId){
+  public Response<DeleteUserResponse> deleteUser(Long userId) {
     return Response.<DeleteUserResponse>builder()
         .id(UUID.randomUUID().toString())
         .data(DeleteUserResponse.builder().success(userDto.deleteUser(userId)).build())

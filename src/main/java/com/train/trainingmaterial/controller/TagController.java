@@ -19,24 +19,30 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @AllArgsConstructor
 public class TagController {
-    private final TagService tagService;
+  private final TagService tagService;
 
-    @GetMapping(value = "")
-    public Response<GetAllTagResponse> getAllTag(){
-        return tagService.getAllTag();
-    }
+  @GetMapping(value = "")
+  public Response<GetAllTagResponse> getAllTag() {
+    return tagService.getAllTag();
+  }
 
-    @PostMapping(value = "",produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Response<AddTagResponse> addTag(@Valid @RequestBody AddTagRequest request){
-        return tagService.addTag(request);
-    }
+  @PostMapping(
+      value = "",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<AddTagResponse> addTag(@Valid @RequestBody AddTagRequest request) {
+    return tagService.addTag(request);
+  }
 
-    @PutMapping(value = "/{tag_id}",produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Response<UpdateTagResponse> updateTag(@PathVariable(value = "tag_id")Long tagId,@RequestBody UpdateTagRequest request){
-        return tagService.updateTag(tagId,request);
-    }
-    @DeleteMapping(value = "/{tag_id}")
-    public Response<DeleteTagResponse> deleteTag(@PathVariable(value = "tag_id")Long tagId){
-        return tagService.deleteTag(tagId);
-    }
+  @PutMapping(
+      value = "/{tag_id}",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<UpdateTagResponse> updateTag(
+      @PathVariable(value = "tag_id") Long tagId, @RequestBody UpdateTagRequest request) {
+    return tagService.updateTag(tagId, request);
+  }
+
+  @DeleteMapping(value = "/{tag_id}")
+  public Response<DeleteTagResponse> deleteTag(@PathVariable(value = "tag_id") Long tagId) {
+    return tagService.deleteTag(tagId);
+  }
 }

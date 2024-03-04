@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface TagDto {
-    GetAllTagResponse getAllTag();
-    AddTagResponse addTag(AddTagRequest request);
-    UpdateTagResponse updateTag(Long tagId, UpdateTagRequest request);
-    DeleteTagResponse deleteTag(Long tagId);
+  GetAllTagResponse getAllTag();
+
+  AddTagResponse addTag(AddTagRequest request);
+
+  UpdateTagResponse updateTag(Long tagId, UpdateTagRequest request);
+
+  DeleteTagResponse deleteTag(Long tagId);
 }

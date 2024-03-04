@@ -1,5 +1,6 @@
-package com.train.trainingmaterial.dao;
+package com.train.trainingmaterial.dao.impl;
 
+import com.train.trainingmaterial.dao.CategoryDao;
 import com.train.trainingmaterial.entity.CategoryEntity;
 import com.train.trainingmaterial.repository.CategoryRepository;
 import java.time.OffsetDateTime;

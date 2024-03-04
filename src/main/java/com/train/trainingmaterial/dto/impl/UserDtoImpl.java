@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -63,7 +62,7 @@ public class UserDtoImpl implements UserDto {
   }
 
   @Override
-  public boolean deleteUser(Long userId){
+  public boolean deleteUser(Long userId) {
     return userDao.deleteUser(userId);
   }
 

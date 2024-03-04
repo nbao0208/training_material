@@ -3,10 +3,9 @@ package com.train.trainingmaterial.dao.impl;
 import com.train.trainingmaterial.dao.UserDao;
 import com.train.trainingmaterial.entity.UserEntity;
 import com.train.trainingmaterial.repository.UserRepository;
+import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.time.OffsetDateTime;
 import java.util.List;
-
-import com.train.trainingmaterial.shared.exception.NullValueException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +26,10 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public boolean updateUser(UserEntity user, Long userId) {
-    UserEntity userInDB = userRepository.findById(userId).orElseThrow(()->new NullValueException("Don't exist user with id " + userId));
+    UserEntity userInDB =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NullValueException("Don't exist user with id " + userId));
     if (user.getFirstName() != null) {
       userInDB.setFirstName(user.getFirstName());
     }
@@ -52,8 +54,11 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
-  public boolean deleteUser(Long userId){
-    UserEntity userInDB = userRepository.findById(userId).orElseThrow(()->new NullValueException("Don't exist user with id " + userId));
+  public boolean deleteUser(Long userId) {
+    UserEntity userInDB =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NullValueException("Don't exist user with id " + userId));
     this.saveDefaultField(userInDB);
     userInDB.setDeleted(true);
     userRepository.save(userInDB);

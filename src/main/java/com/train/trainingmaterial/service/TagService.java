@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface TagService {
-    Response<GetAllTagResponse> getAllTag();
+  Response<GetAllTagResponse> getAllTag();
 
-    Response<AddTagResponse> addTag(AddTagRequest request);
+  Response<AddTagResponse> addTag(AddTagRequest request);
 
-    Response<UpdateTagResponse> updateTag(Long tagId, UpdateTagRequest request);
+  Response<UpdateTagResponse> updateTag(Long tagId, UpdateTagRequest request);
 
-    Response<DeleteTagResponse> deleteTag(Long tagId);
+  Response<DeleteTagResponse> deleteTag(Long tagId);
 }

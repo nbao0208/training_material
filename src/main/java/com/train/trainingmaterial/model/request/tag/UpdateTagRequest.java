@@ -5,5 +5,4 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class UpdateTagRequest extends BaseTagRequest{
-}
+public class UpdateTagRequest extends BaseTagRequest {}

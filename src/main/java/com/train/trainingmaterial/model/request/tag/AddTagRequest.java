@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class AddTagRequest extends BaseTagRequest{
-    public AddTagRequest(@NotNull int level, @NotNull String substance){
-        super(level,substance);
-    }
+public class AddTagRequest extends BaseTagRequest {
+  public AddTagRequest(@NotNull int level, @NotNull String substance) {
+    super(level, substance);
+  }
 }
