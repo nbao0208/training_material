@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class LogInUserRequest {
-    private String account;
-    private String password;
+  private String account;
+  private String password;
 }

@@ -17,10 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @Slf4j
 public class UserRegisterController {
-    private final UserRegisterService userRegisterService;
+  private final UserRegisterService userRegisterService;
 
-    @PostMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Response<RegisterUserResponse> registerUser(@RequestBody RegisterUserRequest request){
-        return userRegisterService.registerUser(request);
-    }
+  @PostMapping(
+      value = "",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<RegisterUserResponse> registerUser(@RequestBody RegisterUserRequest request) {
+    return userRegisterService.registerUser(request);
+  }
+
+
+
+
 }

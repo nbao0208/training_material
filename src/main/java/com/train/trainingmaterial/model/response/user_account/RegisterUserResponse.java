@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class RegisterUserResponse {
-    private boolean success;
+  private boolean success;
 }

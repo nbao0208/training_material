@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserRegisterDto {
-    RegisterUserResponse registerUser(RegisterUserRequest request);
+  RegisterUserResponse registerUser(RegisterUserRequest request);
 }

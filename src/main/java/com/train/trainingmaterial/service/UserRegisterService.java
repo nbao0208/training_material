@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserRegisterService {
-    Response<RegisterUserResponse> registerUser(RegisterUserRequest request);
+  Response<RegisterUserResponse> registerUser(RegisterUserRequest request);
 }
