@@ -64,5 +64,4 @@ public class UserServiceImpl implements UserService {
         .data(DeleteUserResponse.builder().success(userDto.deleteUser(userId)).build())
         .build();
   }
-
 }

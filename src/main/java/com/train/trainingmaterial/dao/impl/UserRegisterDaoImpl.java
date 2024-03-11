@@ -33,6 +33,4 @@ public class UserRegisterDaoImpl implements UserRegisterDao {
     entity.setModifiedBy("Bao Nguyen");
     entity.setDeleted(false);
   }
-
-
 }

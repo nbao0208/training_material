@@ -11,5 +11,4 @@ public class RegisterUserRequest extends BaseUserRequest {
   private String account;
   private String password;
   private String rewritePassword;
-
 }

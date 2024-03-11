@@ -25,8 +25,4 @@ public class UserRegisterController {
   public Response<RegisterUserResponse> registerUser(@RequestBody RegisterUserRequest request) {
     return userRegisterService.registerUser(request);
   }
-
-
-
-
 }
