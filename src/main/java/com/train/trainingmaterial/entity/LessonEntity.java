@@ -1,9 +1,15 @@
 package com.train.trainingmaterial.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "tm_lesson")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Builder
 public class LessonEntity extends BaseEntity {
 
   @ManyToOne

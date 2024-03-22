@@ -2,9 +2,15 @@ package com.train.trainingmaterial.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalTime;
+import lombok.*;
 
 @Entity
 @Table(name = "tm_user_lesson")
+@Data
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserLessonEntity extends BaseEntity {
   @ManyToOne
   @JoinColumn(

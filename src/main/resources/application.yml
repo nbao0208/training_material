@@ -10,3 +10,8 @@ spring:
     show-sql: true
   flyway:
     enabled: true
+
+server:
+    servlet:
+      encoding:
+        charset: UTF-8

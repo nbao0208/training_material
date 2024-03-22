@@ -20,11 +20,22 @@ public abstract class BaseEntity {
   private OffsetDateTime modified;
 
   @Column(name = "created_by", length = 30)
-  private String createdBy;
+  private String createdBy = "Bao Nguyen";
 
   @Column(name = "modified_by", length = 30)
-  private String modifiedBy;
+  private String modifiedBy = "Bao Nguyen";
 
   @Column(name = "is_deleted")
-  private boolean isDeleted;
+  private boolean isDeleted = false;
+
+  @PrePersist
+  protected void onCreate() {
+    this.created = OffsetDateTime.now();
+    this.modified = OffsetDateTime.now();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    this.modified = OffsetDateTime.now();
+  }
 }
