@@ -14,5 +14,6 @@ public class ModifyQuestionDetails {
   @NotNull private List<Long> modifyAnswerId;
   @NotNull private List<Map.Entry<String, Boolean>> modifyAnswers;
   @NotNull private List<Long> deleteAnswerId;
-  @NotNull private List<Map.Entry<Map.Entry<String, Boolean>, Long>> addAnswers;
+  @NotNull private List<Long> questionIdForAdding;
+  @NotNull private List<Map.Entry<String, Boolean>> addAnswers;
 }

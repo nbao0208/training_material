@@ -7,10 +7,12 @@ import com.train.trainingmaterial.model.request.test.ModifyTestRequest;
 import com.train.trainingmaterial.model.response.test.AddTestResponse;
 import com.train.trainingmaterial.model.response.test.ModifyTestResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
+@Slf4j
 public class TestDtoImpl implements TestDto {
   private final TestDao testDao;
 
@@ -25,6 +27,7 @@ public class TestDtoImpl implements TestDto {
 
   @Override
   public ModifyTestResponse modifyTest(Long testId, Long userId, ModifyTestRequest request) {
+    log.info("======> request: " + request.toString());
     return ModifyTestResponse.builder()
         .isSuccess(
             testDao.modifyTest(

@@ -9,10 +9,12 @@ import com.train.trainingmaterial.model.response.test.ModifyTestResponse;
 import com.train.trainingmaterial.service.TestService;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
+@Slf4j
 public class TestServiceImpl implements TestService {
   private final TestDto testDto;
 
@@ -27,6 +29,7 @@ public class TestServiceImpl implements TestService {
   @Override
   public Response<ModifyTestResponse> modifyTest(
       Long testId, Long userId, ModifyTestRequest request) {
+    log.info("=======> request: " + request.toString());
     return Response.<ModifyTestResponse>builder()
         .id(UUID.randomUUID().toString())
         .data(testDto.modifyTest(testId, userId, request))
