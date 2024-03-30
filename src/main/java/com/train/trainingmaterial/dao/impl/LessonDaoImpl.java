@@ -8,6 +8,7 @@ import com.train.trainingmaterial.repository.LessonRepository;
 import com.train.trainingmaterial.repository.ReportRepository;
 import com.train.trainingmaterial.repository.UserLessonRepository;
 import com.train.trainingmaterial.repository.UserRepository;
+import com.train.trainingmaterial.shared.constants.RankingValue;
 import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -86,11 +87,11 @@ public class LessonDaoImpl implements LessonDao {
   }
 
   private String rankingFeedback(int evaluation) {
-    if (evaluation <= 2) {
+    if (evaluation <= RankingValue.TWO_STARTS) {
       return "We will get better next time";
-    } else if (evaluation == 3) {
+    } else if (evaluation == RankingValue.THREE_STARTS) {
       return "Thanks for your response";
-    } else if (evaluation == 4) {
+    } else if (evaluation == RankingValue.FOUR_STARTS) {
       return "Really appreciate with your response";
     }
     return "Big thanks for you sir/ma am";

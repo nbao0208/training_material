@@ -3,7 +3,6 @@ package com.train.trainingmaterial.dao.impl;
 import com.train.trainingmaterial.dao.CategoryDao;
 import com.train.trainingmaterial.entity.CategoryEntity;
 import com.train.trainingmaterial.repository.CategoryRepository;
-import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,7 +19,6 @@ public class CategoryDaoImpl implements CategoryDao {
 
   @Override
   public boolean addCategory(CategoryEntity category) {
-    this.saveDefaultField(category);
     categoryRepository.save(category);
     return true;
   }
@@ -34,7 +32,6 @@ public class CategoryDaoImpl implements CategoryDao {
     if (category.getCategoryName() != null) {
       categoryInDB.setCategoryName(category.getCategoryName());
     }
-    this.saveDefaultField(categoryInDB);
     categoryRepository.save(categoryInDB);
     return true;
   }
@@ -45,17 +42,8 @@ public class CategoryDaoImpl implements CategoryDao {
     if (categoryInDb == null) {
       return false;
     }
-    this.saveDefaultField(categoryInDb);
     categoryInDb.setDeleted(true);
     categoryRepository.save(categoryInDb);
     return true;
-  }
-
-  private void saveDefaultField(CategoryEntity categoryEntity) {
-    categoryEntity.setCreated(OffsetDateTime.now());
-    categoryEntity.setModified(OffsetDateTime.now());
-    categoryEntity.setCreatedBy("Bao Nguyen");
-    categoryEntity.setModifiedBy("Bao Nguyen");
-    categoryEntity.setDeleted(false);
   }
 }

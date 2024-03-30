@@ -3,7 +3,8 @@ package com.train.trainingmaterial.dao.impl;
 import com.train.trainingmaterial.dao.TagDao;
 import com.train.trainingmaterial.entity.TagEntity;
 import com.train.trainingmaterial.repository.TagRepository;
-import java.time.OffsetDateTime;
+import com.train.trainingmaterial.shared.constants.TagLevelConstant;
+import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,24 +21,25 @@ public class TagDaoImpl implements TagDao {
 
   @Override
   public boolean addTag(TagEntity tagEntity) {
-    this.addDefaultField(tagEntity);
     tagRepository.save(tagEntity);
     return true;
   }
 
   @Override
   public boolean updateTag(Long tagId, TagEntity tagEntity) {
-    TagEntity tagFromDb = tagRepository.findById(tagId).orElse(null);
-    if (tagFromDb == null) {
-      return false;
-    }
-    if (tagEntity.getLevel() >= 1 && tagEntity.getLevel() <= 3) {
+    TagEntity tagFromDb =
+        tagRepository
+            .findById(tagId)
+            .orElseThrow(() -> new NullValueException("Not Found this tag"));
+    if (tagEntity.getLevel() >= TagLevelConstant.START_LEVEL
+        && tagEntity.getLevel() <= TagLevelConstant.END_LEVEL) {
       tagFromDb.setLevel(tagEntity.getLevel());
+    } else {
+      return false;
     }
     if (tagEntity.getSubstance() != null) {
       tagFromDb.setSubstance(tagEntity.getSubstance());
     }
-    this.addDefaultField(tagFromDb);
     tagRepository.save(tagFromDb);
     return true;
   }
@@ -48,17 +50,8 @@ public class TagDaoImpl implements TagDao {
     if (tagFromDb == null) {
       return false;
     }
-    this.addDefaultField(tagFromDb);
     tagFromDb.setDeleted(true);
     tagRepository.save(tagFromDb);
     return true;
-  }
-
-  private void addDefaultField(TagEntity tagEntity) {
-    tagEntity.setCreated(OffsetDateTime.now());
-    tagEntity.setModified(OffsetDateTime.now());
-    tagEntity.setCreatedBy("Bao Nguyen");
-    tagEntity.setModifiedBy("Bao Nguyen");
-    tagEntity.setDeleted(false);
   }
 }
