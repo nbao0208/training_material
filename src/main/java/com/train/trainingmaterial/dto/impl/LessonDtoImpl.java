@@ -6,10 +6,7 @@ import com.train.trainingmaterial.entity.LessonEntity;
 import com.train.trainingmaterial.model.request.lesson.CancelLessonRequest;
 import com.train.trainingmaterial.model.request.lesson.EvaluateLessonRequest;
 import com.train.trainingmaterial.model.request.lesson.GetLessonRequest;
-import com.train.trainingmaterial.model.response.lesson.CancelLessonResponse;
-import com.train.trainingmaterial.model.response.lesson.EvaluateLessonResponse;
-import com.train.trainingmaterial.model.response.lesson.GetLessonResponse;
-import com.train.trainingmaterial.model.response.lesson.LessonDetailResponse;
+import com.train.trainingmaterial.model.response.lesson.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Repository;
@@ -42,12 +39,17 @@ public class LessonDtoImpl implements LessonDto {
         .build();
   }
 
+  @Override
+  public CompleteLessonResponse completeLesson(Long userId, Long lessonId) {
+    return CompleteLessonResponse.builder().success(lessonDao.completeLesson(userId,lessonId)).build();
+  }
+
   private LessonDetailResponse lessonDetailFrom(LessonEntity lessonEntity) {
     return LessonDetailResponse.builder()
         .title(lessonEntity.getTitle())
         .intro(lessonEntity.getIntro())
         .contentLink(lessonEntity.getContentLink())
-        .timeRemaining(lessonEntity.getTimeRemaining().toString())
+        .timeRemaining(lessonEntity.getTimeRemaining())
         .build();
   }
 }

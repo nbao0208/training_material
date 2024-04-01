@@ -6,6 +6,7 @@ import com.train.trainingmaterial.model.request.lesson.CancelLessonRequest;
 import com.train.trainingmaterial.model.request.lesson.EvaluateLessonRequest;
 import com.train.trainingmaterial.model.request.lesson.GetLessonRequest;
 import com.train.trainingmaterial.model.response.lesson.CancelLessonResponse;
+import com.train.trainingmaterial.model.response.lesson.CompleteLessonResponse;
 import com.train.trainingmaterial.model.response.lesson.EvaluateLessonResponse;
 import com.train.trainingmaterial.model.response.lesson.GetLessonResponse;
 import com.train.trainingmaterial.service.LessonService;
@@ -41,5 +42,10 @@ public class LessonServiceImpl implements LessonService {
         .id(UUID.randomUUID().toString())
         .data(lessonDto.evaluateLesson(lessonId, request))
         .build();
+  }
+
+  @Override
+  public Response<CompleteLessonResponse> completeLesson(Long userId, Long lessonId) {
+    return Response.<CompleteLessonResponse>builder().id(UUID.randomUUID().toString()).data(lessonDto.completeLesson(userId,lessonId)).build();
   }
 }

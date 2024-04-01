@@ -10,4 +10,6 @@ public interface LessonDao {
   boolean cancelLesson(Long lessonId, Long userId);
 
   String evaluateLesson(Long lessonId, Long userId, int evaluation);
+
+  boolean completeLesson(Long userId, Long lessonId);
 }

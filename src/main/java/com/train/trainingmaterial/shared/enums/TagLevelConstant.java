@@ -1,9 +1,12 @@
-package com.train.trainingmaterial.shared.constants;
+package com.train.trainingmaterial.shared.enums;
 
-public class TagLevelConstant {
-  private TagLevelConstant() {}
-  ;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-  public static final int START_LEVEL = 1;
-  public static final int END_LEVEL = 3;
+@AllArgsConstructor
+@Getter
+public enum TagLevelConstant {
+  START_LEVEL(1),
+  END_LEVEL(3);
+  private final int level;
 }

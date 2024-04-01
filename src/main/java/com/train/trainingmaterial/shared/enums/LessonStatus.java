@@ -5,10 +5,9 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum RankingValue {
-  TWO_STARS(2),
-  THREE_STARS(3),
-  FOUR_STARS(4);
-
-  private final int star;
+public enum LessonStatus {
+  HAVE_NOT_DONE(1),
+  DOING(2),
+  DONE(3);
+  private final long statusId;
 }
