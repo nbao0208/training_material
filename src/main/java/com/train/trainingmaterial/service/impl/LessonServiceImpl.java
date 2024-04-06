@@ -46,6 +46,9 @@ public class LessonServiceImpl implements LessonService {
 
   @Override
   public Response<CompleteLessonResponse> completeLesson(Long userId, Long lessonId) {
-    return Response.<CompleteLessonResponse>builder().id(UUID.randomUUID().toString()).data(lessonDto.completeLesson(userId,lessonId)).build();
+    return Response.<CompleteLessonResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(lessonDto.completeLesson(userId, lessonId))
+        .build();
   }
 }

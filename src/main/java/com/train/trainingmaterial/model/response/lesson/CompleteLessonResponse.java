@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class CompleteLessonResponse {
-    private boolean success;
+  private boolean success;
 }

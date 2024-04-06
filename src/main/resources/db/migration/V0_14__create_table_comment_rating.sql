@@ -6,7 +6,7 @@ $$
             id                  BIGSERIAL                NOT NULL PRIMARY KEY,
             tm_rating_id           BIGSERIAL                NOT NULL,
             tm_comment_template_id BIGSERIAL                NOT NULL,
-            tm_user_id            BIGSERIAL                NOT NULL UNIQUE,
+            tm_user_lesson_id            BIGSERIAL                NOT NULL ,
             created             TIMESTAMP WITH TIME ZONE NOT NULL,
             modified            TIMESTAMP WITH TIME ZONE NOT NULL,
             created_by          VARCHAR(30)              NOT NULL,
@@ -14,7 +14,7 @@ $$
             is_deleted          BOOLEAN                  NOT NULL,
             CONSTRAINT FK_tm_rating_id_tm_comment_rating FOREIGN KEY (tm_rating_id) REFERENCES public."tm_rating" (id),
             CONSTRAINT FK_tm_comment_template_id_tm_comment_rating FOREIGN KEY (tm_comment_template_id) REFERENCES public."tm_comment_template" (id),
-            CONSTRAINT FK_tm_user_id_tm_comment_rating FOREIGN KEY (tm_user_id) REFERENCES public."tm_user_lesson" (tm_user_id)
+            CONSTRAINT FK_tm_user_id_tm_comment_rating FOREIGN KEY (tm_user_lesson_id) REFERENCES public."tm_user_lesson" (id)
             );
 
         COMMENT ON TABLE public."tm_comment_rating" IS 'Comment and rating table';
@@ -22,7 +22,7 @@ $$
         COMMENT ON COLUMN "tm_comment_rating".id IS 'The ID of this table and it is unique';
         COMMENT ON COLUMN "tm_comment_rating".tm_rating_id IS 'A connective value to the rating table';
         COMMENT ON COLUMN "tm_comment_rating".tm_comment_template_id IS 'A connective value to the comment_template table';
-        COMMENT ON COLUMN "tm_comment_rating".tm_user_id IS 'The users ID take from the users_lesson table because this users must have been learning the lesson';
+        COMMENT ON COLUMN "tm_comment_rating".tm_user_lesson_id IS 'The ID take from the users_lesson table because this users must have been learning the lesson';
         COMMENT ON COLUMN "tm_comment_rating".created IS 'Have been created by who';
         COMMENT ON COLUMN "tm_comment_rating".modified IS 'Have been modified by who';
         COMMENT ON COLUMN "tm_comment_rating".created_by IS 'Who have been create this table';

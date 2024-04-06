@@ -7,8 +7,10 @@ import com.train.trainingmaterial.model.request.test.Question;
 import com.train.trainingmaterial.repository.*;
 import com.train.trainingmaterial.shared.constants.GroupID;
 import com.train.trainingmaterial.shared.exception.NullValueException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -22,6 +24,9 @@ public class TestDaoImpl implements TestDao {
   private final LessonRepository lessonRepository;
   private final QuestionRepository questionRepository;
   private final AnswerRepository answerRepository;
+  private final UserLessonRepository userLessonRepository;
+  private final UserTestRepository userTestRepository;
+  private final UserAnswerRepository userAnswerRepository;
 
   @Override
   public boolean addTest(
@@ -69,6 +74,57 @@ public class TestDaoImpl implements TestDao {
       this.addQuestion(addQuestions, test);
     }
     return true;
+  }
+
+  @Override
+  public List<Map.Entry<QuestionEntity, List<AnswerEntity>>> getTest(
+      Long testId, Long userId, Long lessonId) {
+    if (!this.isExist(lessonId, userId)) {
+      throw new NullValueException("This user has not learnt before");
+    }
+    List<QuestionEntity> questions = questionRepository.findByTestId(testId);
+    if (questions.isEmpty()) {
+      throw new NullValueException("404 not found");
+    }
+    List<Map.Entry<QuestionEntity, List<AnswerEntity>>> result = new ArrayList<>();
+    for (QuestionEntity question : questions) {
+      List<AnswerEntity> answers = answerRepository.findByQuestionId(question.getId());
+      result.add(new AbstractMap.SimpleEntry<>(question, answers));
+    }
+    return result;
+  }
+
+  @Override
+  public float submitTest(
+      Long testId, Long lessonId, Long userId, List<Map<Long, Boolean>> answerIds) {
+    for (Map<Long, Boolean> answerId : answerIds) {
+      if (this.isQuestionEmpty(answerId)) {
+        throw new NullValueException("It is not enough questions, please answers all questions");
+      }
+    }
+    List<Long> userAnswers = new ArrayList<>();
+    float score = this.calculateScore(answerIds, userAnswers);
+    UserLessonEntity userLesson =
+        userLessonRepository
+            .findByLessonIdAndUserId(lessonId, userId)
+            .orElseThrow(() -> new NullValueException("404 not found"));
+    TestEntity test =
+        testRepository
+            .findById(testId)
+            .orElseThrow(() -> new NullValueException("404 not found this this"));
+    UserTestEntity userTest =
+        UserTestEntity.builder()
+            .userLessonEntity(userLesson)
+            .testEntity(test)
+            .score(score)
+            .passed(score >= 5)
+            .build();
+    userTestRepository.save(userTest);
+    for (Long userAnswer : userAnswers) {
+      AnswerEntity answer = answerRepository.findById(userAnswer).orElseThrow(()->new NullValueException("404 not found"));
+      userAnswerRepository.save(UserAnswerEntity.builder().userTestEntity(userTest).answerEntity(answer).build());
+    }
+    return score;
   }
 
   private boolean checkValidUser(Long userId) {
@@ -154,5 +210,45 @@ public class TestDaoImpl implements TestDao {
     return questionRepository
         .findById(id)
         .orElseThrow(() -> new NullValueException("404 not found"));
+  }
+
+  private boolean isExist(Long lessonId, Long userId) {
+    return userLessonRepository.findByLessonIdAndUserId(lessonId, userId).orElse(null) != null;
+  }
+
+  private boolean isQuestionEmpty(Map<Long, Boolean> answers) {
+    for (Map.Entry<Long, Boolean> entry : answers.entrySet()) {
+      if (entry.getValue()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private float calculateScore(List<Map<Long, Boolean>> answerIds, List<Long> userAnswers){
+    int correctQuestion = 0;
+    for (Map<Long, Boolean> answerId : answerIds) {
+      int correctAnswerInQuestion = 0;
+      int correctAnswerOfUser = 0;
+      for (Map.Entry<Long, Boolean> entry : answerId.entrySet()) {
+        AnswerEntity answer =
+                answerRepository
+                        .findById(entry.getKey())
+                        .orElseThrow(() -> new NullValueException("404 not found"));
+        if (answer.isCorrect()) {
+          correctAnswerInQuestion++;
+        }
+        if (entry.getValue() && answer.isCorrect()) {
+          correctAnswerOfUser++;
+        }
+        if (entry.getValue()) {
+          userAnswers.add(entry.getKey());
+        }
+      }
+      if (correctAnswerInQuestion == correctAnswerOfUser) {
+        correctQuestion++;
+      }
+    }
+    return ((float) correctQuestion / answerIds.size()) * 10;
   }
 }

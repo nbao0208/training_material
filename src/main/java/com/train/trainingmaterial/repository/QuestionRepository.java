@@ -17,4 +17,7 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
   @Transactional
   @Query(value = "UPDATE tm_question SET is_deleted =true WHERE id IN (:ids)", nativeQuery = true)
   void deleteByListOfId(@Param(value = "ids") List<Long> questionId);
+
+  @Query("select q from QuestionEntity q where q.testEntity.id=:testId and q.isDeleted=false ")
+  List<QuestionEntity> findByTestId(@Param(value = "testId") Long testId);
 }

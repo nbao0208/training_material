@@ -16,11 +16,13 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
 @Data
+@Slf4j
 public class LessonDaoImpl implements LessonDao {
   private final LessonRepository lessonRepository;
   private final UserLessonRepository userLessonRepository;
@@ -54,14 +56,14 @@ public class LessonDaoImpl implements LessonDao {
 
   @Override
   public boolean cancelLesson(Long lessonId, Long userId) {
-    UserLessonEntity userLesson = this.trackingStatusForUser(userId,lessonId);
+    UserLessonEntity userLesson = this.trackingStatusForUser(userId, lessonId);
     userLessonRepository.save(userLesson);
     return true;
   }
 
   @Override
   public String evaluateLesson(Long lessonId, Long userId, int evaluation) {
-    UserLessonEntity userLesson = this.trackingStatusForUser(userId,lessonId);
+    UserLessonEntity userLesson = this.trackingStatusForUser(userId, lessonId);
     userLesson.setEvaluation(evaluation);
     userLessonRepository.save(userLesson);
     return this.rankingFeedback(evaluation);
@@ -69,8 +71,9 @@ public class LessonDaoImpl implements LessonDao {
 
   @Override
   public boolean completeLesson(Long userId, Long lessonId) {
-    UserLessonEntity userLesson = this.trackingStatusForUser(userId,lessonId);
-    userLesson.setReportEntity(reportRepository.findById(LessonStatus.DONE.getStatusId()).orElse(null));
+    UserLessonEntity userLesson = this.trackingStatusForUser(userId, lessonId);
+    userLesson.setReportEntity(
+        reportRepository.findById(LessonStatus.DONE.getStatusId()).orElse(null));
     userLessonRepository.save(userLesson);
     return true;
   }
@@ -104,18 +107,18 @@ public class LessonDaoImpl implements LessonDao {
         .build();
   }
 
-  private UserLessonEntity trackingStatusForUser(Long userId, Long lessonId){
-    UserLessonEntity userLesson=
-    userLessonRepository
+  private UserLessonEntity trackingStatusForUser(Long userId, Long lessonId) {
+    UserLessonEntity userLesson =
+        userLessonRepository
             .findByLessonIdAndUserId(lessonId, userId)
             .orElseThrow(() -> new NullValueException("OOps not found @@"));
     LocalTime timeLearning = this.timeBetween(userLesson.getModified(), OffsetDateTime.now());
     userLesson.setTimeReading(
-            userLesson
-                    .getTimeReading()
-                    .plusHours(timeLearning.getHour())
-                    .plusMinutes(timeLearning.getMinute())
-                    .plusSeconds(timeLearning.getSecond()));
+        userLesson
+            .getTimeReading()
+            .plusHours(timeLearning.getHour())
+            .plusMinutes(timeLearning.getMinute())
+            .plusSeconds(timeLearning.getSecond()));
     return userLesson;
   }
 }

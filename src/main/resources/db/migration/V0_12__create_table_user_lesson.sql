@@ -4,7 +4,7 @@ $$
         CREATE TABLE IF NOT EXISTS public."tm_user_lesson"
         (
             id          BIGSERIAL                NOT NULL PRIMARY KEY,
-            tm_user_id    BIGSERIAL UNIQUE         NOT NULL,
+            tm_user_id    BIGSERIAL                 NOT NULL,
             tm_lesson_id   BIGSERIAL                NOT NULL,
             tm_report_id   BIGSERIAL                NOT NULL,
             view         INT CHECK (view >= 0)    NOT NULL,
