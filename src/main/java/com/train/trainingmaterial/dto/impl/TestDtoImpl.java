@@ -4,10 +4,7 @@ import com.train.trainingmaterial.dao.TestDao;
 import com.train.trainingmaterial.dto.TestDto;
 import com.train.trainingmaterial.entity.AnswerEntity;
 import com.train.trainingmaterial.entity.QuestionEntity;
-import com.train.trainingmaterial.model.request.test.AddTestRequest;
-import com.train.trainingmaterial.model.request.test.GetTestRequest;
-import com.train.trainingmaterial.model.request.test.ModifyTestRequest;
-import com.train.trainingmaterial.model.request.test.SubmitTestRequest;
+import com.train.trainingmaterial.model.request.test.*;
 import com.train.trainingmaterial.model.response.test.*;
 import com.train.trainingmaterial.shared.constants.MessageResponseForTheSubmittedTest;
 import com.train.trainingmaterial.shared.exception.NullValueException;
@@ -65,6 +62,14 @@ public class TestDtoImpl implements TestDto {
         .score(score)
         .passed(score >= 5)
         .message(this.messageResponseWhenScoreIs(score))
+        .build();
+  }
+
+  @Override
+  public ShowDetailedResultResponse showDetailedResult(
+      Long testId, Long lessonId, ShowDetailedResultRequest request) {
+    return ShowDetailedResultResponse.builder()
+        .tests(testDao.showDetailedResult(testId, lessonId, request.getUserId()))
         .build();
   }
 

@@ -1,6 +1,7 @@
 package com.train.trainingmaterial.repository;
 
 import com.train.trainingmaterial.entity.UserAnswerEntity;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,8 @@ public interface UserAnswerRepository extends JpaRepository<UserAnswerEntity, Lo
       nativeQuery = true)
   void insertNewUserAnswer(
       @Param(value = "userTestId") Long userTestId, @Param(value = "answerId") Long answerId);
+
+  @Query(
+      "select ua.answerEntity.id from UserAnswerEntity ua where ua.userTestEntity.id = :userTestId")
+  List<Long> findByUserTestId(@Param(value = "userTestId") Long userTestId);
 }

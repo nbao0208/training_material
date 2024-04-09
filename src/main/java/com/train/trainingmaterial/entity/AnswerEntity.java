@@ -22,5 +22,5 @@ public class AnswerEntity extends BaseEntity {
   private QuestionEntity questionEntity;
 
   @Column(name = "is_correct")
-  boolean isCorrect;
+  private boolean isCorrect;
 }

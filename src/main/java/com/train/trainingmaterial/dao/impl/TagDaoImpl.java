@@ -31,8 +31,7 @@ public class TagDaoImpl implements TagDao {
         tagRepository
             .findById(tagId)
             .orElseThrow(() -> new NullValueException("Not Found this tag"));
-    if (tagEntity.getLevel() >= TagLevelConstant.START_LEVEL.getLevel()
-        && tagEntity.getLevel() <= TagLevelConstant.END_LEVEL.getLevel()) {
+    if (this.isValidLevel(tagEntity.getLevel())) {
       tagFromDb.setLevel(tagEntity.getLevel());
     } else {
       return false;
@@ -53,5 +52,10 @@ public class TagDaoImpl implements TagDao {
     tagFromDb.setDeleted(true);
     tagRepository.save(tagFromDb);
     return true;
+  }
+
+  private boolean isValidLevel(int level) {
+    return level >= TagLevelConstant.START_LEVEL.getLevel()
+        && level <= TagLevelConstant.END_LEVEL.getLevel();
   }
 }
