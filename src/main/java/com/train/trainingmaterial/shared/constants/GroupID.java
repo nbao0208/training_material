@@ -4,6 +4,6 @@ public class GroupID {
   private GroupID() {}
   ;
 
-  public static long STUDENT_ID = 1;
-  public static long TEACHER_ID = 2;
+  public static final long STUDENT_ID = 1;
+  public static final long TEACHER_ID = 2;
 }

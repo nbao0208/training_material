@@ -176,6 +176,9 @@ public class TestDaoImpl implements TestDao {
     if (!modifyQuestionDetails.getAddAnswers().isEmpty()) {
       this.addAnswer(modifyQuestionDetails);
     }
+    if (!modifyQuestionDetails.getQuestionIdForFundamentalField().isEmpty()) {
+      this.modifyFundamentalFieldForQuestion(modifyQuestionDetails);
+    }
   }
 
   private void saveDefaultFieldOf(TestEntity test, String title, String rule) {
@@ -264,6 +267,20 @@ public class TestDaoImpl implements TestDao {
                 })
             .toList();
     answerRepository.saveAll(addAnswers);
+  }
+
+  private void modifyFundamentalFieldForQuestion(ModifyQuestionDetails modifyQuestionDetails) {
+    List<QuestionEntity> questions =
+        questionRepository.findByListOfQuestionId(
+            modifyQuestionDetails.getQuestionIdForFundamentalField());
+    if (questions.isEmpty()) {
+      throw new NullValueException("Don't have any question with some ids");
+    }
+    for (int i = 0; i < questions.size(); i++) {
+      questions.get(i).setQuestion(modifyQuestionDetails.getQuestions().get(i));
+      questions.get(i).setQuestionType(modifyQuestionDetails.getQuestionTypes().get(i));
+    }
+    questionRepository.saveAll(questions);
   }
 
   private UserTestEntity saveUserTest(Long lessonId, Long userId, Long testId, float score) {

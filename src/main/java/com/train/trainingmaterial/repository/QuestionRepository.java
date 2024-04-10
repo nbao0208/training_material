@@ -20,4 +20,7 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
 
   @Query("select q from QuestionEntity q where q.testEntity.id=:testId and q.isDeleted=false ")
   List<QuestionEntity> findByTestId(@Param(value = "testId") Long testId);
+
+  @Query("select q from QuestionEntity q where q.id in (:questionIds)")
+  List<QuestionEntity> findByListOfQuestionId(@Param(value = "questionIds") List<Long> questionIds);
 }

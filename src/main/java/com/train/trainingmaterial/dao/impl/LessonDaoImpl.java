@@ -1,13 +1,9 @@
 package com.train.trainingmaterial.dao.impl;
 
 import com.train.trainingmaterial.dao.LessonDao;
-import com.train.trainingmaterial.entity.LessonEntity;
-import com.train.trainingmaterial.entity.UserEntity;
-import com.train.trainingmaterial.entity.UserLessonEntity;
-import com.train.trainingmaterial.repository.LessonRepository;
-import com.train.trainingmaterial.repository.ReportRepository;
-import com.train.trainingmaterial.repository.UserLessonRepository;
-import com.train.trainingmaterial.repository.UserRepository;
+import com.train.trainingmaterial.entity.*;
+import com.train.trainingmaterial.repository.*;
+import com.train.trainingmaterial.shared.constants.GroupID;
 import com.train.trainingmaterial.shared.enums.LessonStatus;
 import com.train.trainingmaterial.shared.enums.RankingValue;
 import com.train.trainingmaterial.shared.exception.NullValueException;
@@ -29,6 +25,8 @@ public class LessonDaoImpl implements LessonDao {
   private final UserLessonRepository userLessonRepository;
   private final UserRepository userRepository;
   private final ReportRepository reportRepository;
+  private final CategoryRepository categoryRepository;
+  private final UserGroupRepository userGroupRepository;
 
   @Override
   public LessonEntity getLesson(Long lessonId, Long userId) {
@@ -69,6 +67,41 @@ public class LessonDaoImpl implements LessonDao {
     userLesson.setReportEntity(
         reportRepository.findById(LessonStatus.DONE.getStatusId()).orElse(null));
     userLessonRepository.save(userLesson);
+    return true;
+  }
+
+  @Override
+  public boolean createLesson(
+      Long userId,
+      Long categoryId,
+      String contentLink,
+      String title,
+      String intro,
+      int timeRemaining) {
+    if (!this.isValidToTakeAction(userId)) {
+      throw new WrongValueException("This user can't have enough level to create lesson");
+    }
+    CategoryEntity categoryEntity =
+        categoryRepository
+            .findById(categoryId)
+            .orElseThrow(() -> new NullValueException("404 not found this category"));
+    this.saveLessonToDB(categoryEntity, contentLink, title, intro, timeRemaining);
+    return true;
+  }
+
+  @Override
+  public boolean updateLesson(
+      Long lessonId,
+      Long userId,
+      Long categoryId,
+      String contentLink,
+      String title,
+      String intro,
+      Integer timeRemaining) {
+    if (!this.isValidToTakeAction(userId)) {
+      throw new NullValueException("404 not found");
+    }
+    this.updateLessonToDb(lessonId, categoryId, contentLink, title, intro, timeRemaining);
     return true;
   }
 
@@ -129,5 +162,69 @@ public class LessonDaoImpl implements LessonDao {
     return lessonRepository
         .findById(lessonId)
         .orElseThrow(() -> new NullValueException("Don't find any lesson with id " + lessonId));
+  }
+
+  private boolean isValidToTakeAction(Long userId) {
+    GroupEntity groupEntity =
+        userGroupRepository
+            .roleOf(userId)
+            .orElseThrow(() -> new NullValueException("404 not found"));
+    return groupEntity.getId() == GroupID.TEACHER_ID;
+  }
+
+  private void saveLessonToDB(
+      CategoryEntity categoryEntity,
+      String contentLink,
+      String title,
+      String intro,
+      int timeRemaining) {
+    lessonRepository.save(
+        LessonEntity.builder()
+            .categoryEntity(categoryEntity)
+            .contentLink(contentLink)
+            .title(title)
+            .intro(intro)
+            .timeRemaining(timeRemaining)
+            .build());
+  }
+
+  private void updateLessonToDb(
+      Long lessonId,
+      Long categoryId,
+      String contentLink,
+      String title,
+      String intro,
+      Integer timeRemaining) {
+    if (timeRemaining != null && timeRemaining < 0) {
+      throw new WrongValueException("time remaining can't be negative");
+    }
+    LessonEntity lessonEntity =
+        lessonRepository
+            .findById(lessonId)
+            .orElseThrow(() -> new NullValueException("404 not found"));
+    if (categoryId != null) {
+      CategoryEntity categoryEntity =
+          categoryRepository
+              .findById(categoryId)
+              .orElseThrow(() -> new NullValueException("404 not found"));
+      lessonEntity.setCategoryEntity(categoryEntity);
+    }
+    if (contentLink != null) {
+      lessonEntity.setContentLink(contentLink);
+    }
+    if (title != null) {
+      lessonEntity.setTitle(title);
+    }
+    if (intro != null) {
+      lessonEntity.setIntro(intro);
+    }
+    if (this.isTimeValid(timeRemaining)) {
+      lessonEntity.setTimeRemaining(timeRemaining);
+    }
+    lessonRepository.save(lessonEntity);
+  }
+
+  private boolean isTimeValid(Integer time) {
+    return time != null && time >= 0;
   }
 }

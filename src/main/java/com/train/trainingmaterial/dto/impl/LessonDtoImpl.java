@@ -3,9 +3,7 @@ package com.train.trainingmaterial.dto.impl;
 import com.train.trainingmaterial.dao.LessonDao;
 import com.train.trainingmaterial.dto.LessonDto;
 import com.train.trainingmaterial.entity.LessonEntity;
-import com.train.trainingmaterial.model.request.lesson.CancelLessonRequest;
-import com.train.trainingmaterial.model.request.lesson.EvaluateLessonRequest;
-import com.train.trainingmaterial.model.request.lesson.GetLessonRequest;
+import com.train.trainingmaterial.model.request.lesson.*;
 import com.train.trainingmaterial.model.response.lesson.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,6 +41,35 @@ public class LessonDtoImpl implements LessonDto {
   public CompleteLessonResponse completeLesson(Long userId, Long lessonId) {
     return CompleteLessonResponse.builder()
         .success(lessonDao.completeLesson(userId, lessonId))
+        .build();
+  }
+
+  @Override
+  public CreateLessonResponse createLesson(CreateLessonRequest request) {
+    return CreateLessonResponse.builder()
+        .success(
+            lessonDao.createLesson(
+                request.getUserId(),
+                request.getCategoryId(),
+                request.getContentLink(),
+                request.getTitle(),
+                request.getIntro(),
+                request.getTimeRemaining()))
+        .build();
+  }
+
+  @Override
+  public UpdateLessonResponse updateLesson(Long lessonId, UpdateLessonRequest request) {
+    return UpdateLessonResponse.builder()
+        .success(
+            lessonDao.updateLesson(
+                lessonId,
+                request.getUserId(),
+                request.getCategoryId(),
+                request.getContentLink(),
+                request.getTitle(),
+                request.getIntro(),
+                request.getTimeRemaining()))
         .build();
   }
 
