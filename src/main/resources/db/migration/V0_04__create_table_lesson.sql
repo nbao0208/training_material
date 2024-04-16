@@ -29,18 +29,19 @@ $$
         COMMENT ON COLUMN "tm_lesson".created_by IS 'Who have been create this table';
         COMMENT ON COLUMN "tm_lesson".modified_by IS 'Who have been modify this table';
         COMMENT ON COLUMN "tm_lesson".is_deleted IS 'Have this table been deleted';
---
---         INSERT INTO public.tm_lesson (tm_category_id, content_link, title, intro, created, modified, created_by, modified_by,
---                                    is_deleted)
---         SELECT (SELECT id FROM public.tm_category ORDER BY RANDOM() LIMIT 1) AS tm_category_id,
---                '/tm_lesson_content_link_' || generate_series                 AS content_link,
---                'tm_lesson ' || generate_series                               AS title,
---                'Introduction to tm_lesson ' || generate_series               AS intro,
---                CURRENT_TIMESTAMP                                          AS created,
---                CURRENT_TIMESTAMP                                          AS modified,
---                'bao nguyen'                                               AS created_by,
---                'bao nguyen'                                               AS modified_by,
---                false                                                      AS is_deleted
---         FROM generate_series(1, 100);
+
+-- INSERT INTO public.tm_lesson (tm_category_id, content_link, title, intro, time_remaining, created, modified, created_by, modified_by, is_deleted)
+-- SELECT
+--     (random() * 4 + 1)::int,
+--         'http://example.com/lesson' || generate_series(1, 10) || '.html',
+--     'Bài học ' || generate_series(1, 10),
+--     'Nội dung giới thiệu cho bài học ' || generate_series(1, 10),
+--     (random() * 120)::int,
+--         CURRENT_TIMESTAMP,
+--     CURRENT_TIMESTAMP,
+--     'bao nguyen',
+--     'bao nguyen',
+--     false
+-- FROM generate_series(1, 10);
     END
 $$
