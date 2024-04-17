@@ -51,6 +51,7 @@ public class LessonDtoImpl implements LessonDto {
             lessonDao.createLesson(
                 request.getUserId(),
                 request.getCategoryId(),
+                request.getTagId(),
                 request.getContentLink(),
                 request.getTitle(),
                 request.getIntro(),
@@ -71,6 +72,11 @@ public class LessonDtoImpl implements LessonDto {
                 request.getIntro(),
                 request.getTimeRemaining()))
         .build();
+  }
+
+  @Override
+  public GetLessonReportResponse getLessonReport(GetLessonReportRequest request) {
+    return lessonDao.getLessonReport(request.getUserId(), request.getLessonId());
   }
 
   private LessonDetailResponse lessonDetailFrom(LessonEntity lessonEntity) {

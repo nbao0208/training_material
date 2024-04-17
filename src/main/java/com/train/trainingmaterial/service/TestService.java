@@ -17,4 +17,6 @@ public interface TestService {
 
   Response<ShowDetailedResultResponse> showDetailedResult(
       Long testId, Long lessonId, ShowDetailedResultRequest request);
+
+  Response<GetTestReportResponse> getTestReport(GetTestReportRequest request);
 }

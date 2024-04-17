@@ -68,4 +68,12 @@ public class LessonController {
       @PathVariable(value = "lesson_id") Long lessonId) {
     return lessonService.completeLesson(userId, lessonId);
   }
+
+  @GetMapping(
+      value = "/report",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<GetLessonReportResponse> getLessonReport(
+      @Valid @RequestBody GetLessonReportRequest request) {
+    return lessonService.getLessonReport(request);
+  }
 }

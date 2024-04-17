@@ -62,4 +62,12 @@ public class LessonServiceImpl implements LessonService {
         .data(lessonDto.updateLesson(lessonId, request))
         .build();
   }
+
+  @Override
+  public Response<GetLessonReportResponse> getLessonReport(GetLessonReportRequest request) {
+    return Response.<GetLessonReportResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(lessonDto.getLessonReport(request))
+        .build();
+  }
 }

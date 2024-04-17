@@ -66,4 +66,12 @@ public class TestServiceImpl implements TestService {
         .data(testDto.showDetailedResult(testId, lessonId, request))
         .build();
   }
+
+  @Override
+  public Response<GetTestReportResponse> getTestReport(GetTestReportRequest request) {
+    return Response.<GetTestReportResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(testDto.getTestReport(request))
+        .build();
+  }
 }

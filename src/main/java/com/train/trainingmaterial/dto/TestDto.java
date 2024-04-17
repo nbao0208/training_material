@@ -16,4 +16,6 @@ public interface TestDto {
 
   ShowDetailedResultResponse showDetailedResult(
       Long testId, Long lessonId, ShowDetailedResultRequest request);
+
+  GetTestReportResponse getTestReport(GetTestReportRequest request);
 }
