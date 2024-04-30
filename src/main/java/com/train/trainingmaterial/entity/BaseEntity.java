@@ -1,5 +1,6 @@
 package com.train.trainingmaterial.entity;
 
+import com.train.trainingmaterial.shared.constants.PersonTakeActionInDB;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import lombok.*;
@@ -20,10 +21,10 @@ public abstract class BaseEntity {
   private OffsetDateTime modified;
 
   @Column(name = "created_by", length = 30)
-  private String createdBy = "Bao Nguyen";
+  private String createdBy = PersonTakeActionInDB.PERSON_HANDLE;
 
   @Column(name = "modified_by", length = 30)
-  private String modifiedBy = "Bao Nguyen";
+  private String modifiedBy = PersonTakeActionInDB.PERSON_HANDLE;
 
   @Column(name = "is_deleted")
   private boolean isDeleted = false;

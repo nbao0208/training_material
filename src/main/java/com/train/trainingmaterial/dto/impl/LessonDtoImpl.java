@@ -47,6 +47,7 @@ public class LessonDtoImpl implements LessonDto {
         .title(lessonEntity.getTitle())
         .intro(lessonEntity.getIntro())
         .contentLink(lessonEntity.getContentLink())
+        .timeRemaining(lessonEntity.getTimeRemaining().toString())
         .build();
   }
 }

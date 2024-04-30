@@ -5,10 +5,10 @@ import com.train.trainingmaterial.entity.*;
 import com.train.trainingmaterial.model.request.test.ModifyQuestionDetails;
 import com.train.trainingmaterial.model.request.test.Question;
 import com.train.trainingmaterial.repository.*;
+import com.train.trainingmaterial.shared.constants.GroupID;
 import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -36,24 +36,7 @@ public class TestDaoImpl implements TestDao {
     TestEntity testEntity =
         TestEntity.builder().lessonEntity(lessonEntity).title(title).rule(rule).build();
     testRepository.save(testEntity);
-    for (Question question : questions) {
-      QuestionEntity questionEntity =
-          QuestionEntity.builder()
-              .questionType(question.getQuestionType())
-              .question(question.getQuestion())
-              .testEntity(testEntity)
-              .build();
-      questionRepository.save(questionEntity);
-      for (Map.Entry<String, Boolean> answer : question.getAnswers()) {
-        AnswerEntity answerEntity =
-            AnswerEntity.builder()
-                .questionEntity(questionEntity)
-                .answer(answer.getKey())
-                .isCorrect(answer.getValue())
-                .build();
-        answerRepository.save(answerEntity);
-      }
-    }
+    this.addQuestion(questions, testEntity);
     return true;
   }
 
@@ -73,9 +56,7 @@ public class TestDaoImpl implements TestDao {
     }
     TestEntity test =
         testRepository.findById(testId).orElseThrow(() -> new NullValueException("404 not found"));
-    test.setTitle(title);
-    test.setRule(rule);
-    testRepository.save(test);
+    this.saveDefaultFieldOf(test, title, rule);
     if (!deleteQuestionId.isEmpty()) {
       questionRepository.deleteByListOfId(deleteQuestionId);
     }
@@ -95,7 +76,7 @@ public class TestDaoImpl implements TestDao {
         userGroupRepository
             .roleOf(userId)
             .orElseThrow(() -> new NullValueException("Invalid value"));
-    return groupEntity.getId() == 2;
+    return groupEntity.getId() == GroupID.TEACHER_ID;
   }
 
   private void addQuestion(List<Question> addQuestions, TestEntity test) {
@@ -160,5 +141,11 @@ public class TestDaoImpl implements TestDao {
       }
       answerRepository.saveAll(addAnswers);
     }
+  }
+
+  private void saveDefaultFieldOf(TestEntity test, String title, String rule) {
+    test.setTitle(title);
+    test.setRule(rule);
+    testRepository.save(test);
   }
 }
