@@ -3,6 +3,7 @@ package com.train.trainingmaterial.controller;
 import com.train.trainingmaterial.model.common.Response;
 import com.train.trainingmaterial.model.request.test.AddTestRequest;
 import com.train.trainingmaterial.model.request.test.ModifyTestRequest;
+import com.train.trainingmaterial.model.request.test.ModifyTestRequestTesting;
 import com.train.trainingmaterial.model.response.test.AddTestResponse;
 import com.train.trainingmaterial.model.response.test.ModifyTestResponse;
 import com.train.trainingmaterial.service.TestService;
@@ -30,14 +31,24 @@ public class TestController {
     return testService.addTest(lessonId, userId, request);
   }
 
-  @PostMapping(
+  @PutMapping(
       value = "/{test_id}/user/{user_id}",
       produces = {MediaType.APPLICATION_JSON_VALUE},
-  consumes = "application/json;charset=UTF-8")
+      consumes = "application/json;charset=UTF-8")
   public Response<ModifyTestResponse> modifyTest(
       @PathVariable(value = "test_id") Long testId,
       @PathVariable(value = "user_id") Long userId,
       @Valid @RequestBody ModifyTestRequest request) {
+    log.info("=====> request: " + request.toString());
     return testService.modifyTest(testId, userId, request);
+  }
+
+  @PutMapping(
+      value = "/testing",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<ModifyTestResponse> testForModify(
+      @Valid @RequestBody ModifyTestRequestTesting request) {
+    log.info("=====>request: " + request.toString());
+    return null;
   }
 }
