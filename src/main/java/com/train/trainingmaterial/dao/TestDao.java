@@ -4,6 +4,7 @@ import com.train.trainingmaterial.entity.AnswerEntity;
 import com.train.trainingmaterial.entity.QuestionEntity;
 import com.train.trainingmaterial.model.request.test.ModifyQuestionDetails;
 import com.train.trainingmaterial.model.request.test.Question;
+import com.train.trainingmaterial.model.response.test.TestForResponse;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
@@ -25,4 +26,6 @@ public interface TestDao {
       Long testId, Long userId, Long lessonId);
 
   float submitTest(Long testId, Long lessonId, Long userId, List<Map<Long, Boolean>> answerIds);
+
+  List<TestForResponse> showDetailedResult(Long testId, Long lessonId, Long userId);
 }

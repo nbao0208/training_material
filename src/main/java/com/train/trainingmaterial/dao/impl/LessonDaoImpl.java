@@ -11,6 +11,7 @@ import com.train.trainingmaterial.repository.UserRepository;
 import com.train.trainingmaterial.shared.enums.LessonStatus;
 import com.train.trainingmaterial.shared.enums.RankingValue;
 import com.train.trainingmaterial.shared.exception.NullValueException;
+import com.train.trainingmaterial.shared.exception.WrongValueException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -34,15 +35,8 @@ public class LessonDaoImpl implements LessonDao {
     UserLessonEntity userLesson =
         userLessonRepository.findByLessonIdAndUserId(lessonId, userId).orElse(null);
     if (userLesson == null) {
-      UserEntity userEntity =
-          userRepository
-              .findById(userId)
-              .orElseThrow(() -> new NullValueException("Don't find any user with id " + userId));
-      LessonEntity lessonEntity =
-          lessonRepository
-              .findById(lessonId)
-              .orElseThrow(
-                  () -> new NullValueException("Don't find any lesson with id " + lessonId));
+      UserEntity userEntity = this.findUserByUserId(userId);
+      LessonEntity lessonEntity = this.findLessonByLessonId(lessonId);
       userLesson = this.generateFrom(userEntity, lessonEntity);
       userLessonRepository.save(userLesson);
       return lessonEntity;
@@ -79,6 +73,9 @@ public class LessonDaoImpl implements LessonDao {
   }
 
   private String rankingFeedback(int evaluation) {
+    if (evaluation <= 0 || evaluation > RankingValue.FIVE_STARTS.getStar()) {
+      throw new WrongValueException("Error value of evaluation");
+    }
     if (evaluation <= RankingValue.TWO_STARS.getStar()) {
       return "We will get better next time";
     } else if (evaluation == RankingValue.THREE_STARS.getStar()) {
@@ -120,5 +117,17 @@ public class LessonDaoImpl implements LessonDao {
             .plusMinutes(timeLearning.getMinute())
             .plusSeconds(timeLearning.getSecond()));
     return userLesson;
+  }
+
+  private UserEntity findUserByUserId(Long userId) {
+    return userRepository
+        .findById(userId)
+        .orElseThrow(() -> new NullValueException("Don't find any user with id " + userId));
+  }
+
+  private LessonEntity findLessonByLessonId(Long lessonId) {
+    return lessonRepository
+        .findById(lessonId)
+        .orElseThrow(() -> new NullValueException("Don't find any lesson with id " + lessonId));
   }
 }

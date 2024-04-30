@@ -15,7 +15,10 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
       value = "update tm_answer set is_deleted=true where id in (:deleteAnswerIds) ",
       nativeQuery = true)
   void deleteAllByListOf(@Param(value = "deleteAnswerIds") List<Long> deleteAnswerIds);
-
+  @Modifying
+  @Transactional
+  @Query(value = "update tm_answer set is_deleted = true where tm_question_id in (:questionIds)",nativeQuery = true)
+  void deleteAllByListOfQuestionId(@Param(value = "questionIds")List<Long> questionIds);
   @Query(
       "select a from AnswerEntity a where a.questionEntity.id=:questionId and a.isDeleted=false ")
   List<AnswerEntity> findByQuestionId(@Param(value = "questionId") Long questionId);

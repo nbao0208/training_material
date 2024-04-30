@@ -2,10 +2,7 @@ package com.train.trainingmaterial.service.impl;
 
 import com.train.trainingmaterial.dto.TestDto;
 import com.train.trainingmaterial.model.common.Response;
-import com.train.trainingmaterial.model.request.test.AddTestRequest;
-import com.train.trainingmaterial.model.request.test.GetTestRequest;
-import com.train.trainingmaterial.model.request.test.ModifyTestRequest;
-import com.train.trainingmaterial.model.request.test.SubmitTestRequest;
+import com.train.trainingmaterial.model.request.test.*;
 import com.train.trainingmaterial.model.response.test.*;
 import com.train.trainingmaterial.service.TestService;
 import java.util.ArrayList;
@@ -58,6 +55,15 @@ public class TestServiceImpl implements TestService {
     return Response.<SubmitTestResponse>builder()
         .id(UUID.randomUUID().toString())
         .data(testDto.submitTest(testId, lessonId, request))
+        .build();
+  }
+
+  @Override
+  public Response<ShowDetailedResultResponse> showDetailedResult(
+      Long testId, Long lessonId, ShowDetailedResultRequest request) {
+    return Response.<ShowDetailedResultResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(testDto.showDetailedResult(testId, lessonId, request))
         .build();
   }
 }

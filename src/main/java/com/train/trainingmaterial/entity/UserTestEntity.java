@@ -17,14 +17,14 @@ public class UserTestEntity extends BaseEntity {
       name = "tm_user_lesson_id",
       referencedColumnName = "id",
       foreignKey = @ForeignKey(name = "FK_tm_user_lesson_id_tm_user_test"))
-  UserLessonEntity userLessonEntity;
+  private UserLessonEntity userLessonEntity;
 
   @ManyToOne
   @JoinColumn(
       name = "tm_test_id",
       referencedColumnName = "id",
       foreignKey = @ForeignKey(name = "FK_tm_test_id_tm_user_test"))
-  TestEntity testEntity;
+  private TestEntity testEntity;
 
   @Column(name = "score", columnDefinition = "INT CHECK(score>=0)")
   private float score;
