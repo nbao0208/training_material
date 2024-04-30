@@ -1,29 +1,16 @@
 package com.train.trainingmaterial.entity;
 
 import jakarta.persistence.*;
-import java.time.OffsetDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "tm_comment_rating")
-public class CommentRatingEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
-
-  @ManyToOne
-  @JoinColumn(
-      name = "tm_rating_id",
-      referencedColumnName = "id",
-      foreignKey = @ForeignKey(name = "FK_tm_rating_id_tm_comment_rating"))
-  private RatingEntity ratingEntity;
-
-  @ManyToOne
-  @JoinColumn(
-      name = "tm_comment_template_id",
-      referencedColumnName = "id",
-      foreignKey = @ForeignKey(name = "FK_tm_comment_template_id_tm_comment_rating"))
-  private CommentTemplateEntity commentTemplateEntity;
+@Data
+@Builder
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
+public class CommentRatingEntity extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(
@@ -32,18 +19,10 @@ public class CommentRatingEntity {
       foreignKey = @ForeignKey(name = "FK_tm_user_lesson_id_tm_comment_rating"))
   private UserLessonEntity userLessonEntity;
 
-  @Column(name = "created")
-  private OffsetDateTime created;
-
-  @Column(name = "modified")
-  private OffsetDateTime modified;
-
-  @Column(name = "created_by", length = 30)
-  private String created_by;
-
-  @Column(name = "modified_by", length = 30)
-  private String modified_by;
-
-  @Column(name = "is_deleted")
-  private boolean is_deleted;
+  @ManyToOne
+  @JoinColumn(
+      name = "tm_comment_template_id",
+      referencedColumnName = "id",
+      foreignKey = @ForeignKey(name = "FK_tm_comment_template_id_tm_comment_rating"))
+  private CommentTemplateEntity commentTemplateEntity;
 }
