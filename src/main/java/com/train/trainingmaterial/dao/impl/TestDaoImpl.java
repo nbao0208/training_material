@@ -4,12 +4,15 @@ import com.train.trainingmaterial.dao.TestDao;
 import com.train.trainingmaterial.entity.*;
 import com.train.trainingmaterial.model.request.test.ModifyQuestionDetails;
 import com.train.trainingmaterial.model.request.test.Question;
+import com.train.trainingmaterial.model.response.test.GetTestReportResponse;
 import com.train.trainingmaterial.model.response.test.QuestionForResponse;
 import com.train.trainingmaterial.model.response.test.TestForResponse;
 import com.train.trainingmaterial.repository.*;
 import com.train.trainingmaterial.shared.constants.GroupID;
 import com.train.trainingmaterial.shared.enums.PassingLevel;
 import com.train.trainingmaterial.shared.exception.NullValueException;
+import com.train.trainingmaterial.shared.exception.WrongValueException;
+import java.time.OffsetDateTime;
 import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ public class TestDaoImpl implements TestDao {
   private final UserLessonRepository userLessonRepository;
   private final UserTestRepository userTestRepository;
   private final UserAnswerRepository userAnswerRepository;
+  private final UserRepository userRepository;
 
   @Override
   public boolean addTest(
@@ -117,7 +121,7 @@ public class TestDaoImpl implements TestDao {
             .findByLessonIdAndUserId(lessonId, userId)
             .orElseThrow(() -> new NullValueException("404 not found"));
     List<UserTestEntity> userTests =
-        userTestRepository.findByUserLessonIdAndTestId(userLesson.getId(), testId);
+        this.findUserTestByUserLessonAndTestId(userLesson.getId(), testId);
     if (userTests.isEmpty()) {
       throw new NullValueException("You had not do the test");
     }
@@ -127,6 +131,28 @@ public class TestDaoImpl implements TestDao {
             .map(question -> answerRepository.findByQuestionId(question.getId()))
             .toList();
     return this.takeTestForResponse(userTests, questions, answersOfAllQuestions);
+  }
+
+  @Override
+  public GetTestReportResponse getTestReport(Long userId, Long testId, Long lessonId) {
+    UserLessonEntity userLesson = this.findUserLessonByUserAndLessonId(userId, lessonId);
+    List<UserTestEntity> userTest =
+        this.findUserTestByUserLessonAndTestId(userLesson.getId(), testId);
+    if (!this.isDoneTest(userTest)) {
+      throw new WrongValueException("user has not done any test before");
+    }
+    List<QuestionEntity> questionEntities = questionRepository.findByTestId(testId);
+    int questions = questionEntities.size();
+    List<Integer> trueQuestions = this.getTrueQuestions(userTest, questions);
+    return GetTestReportResponse.builder()
+        .name(this.getUserName(userId))
+        .beginDoingTest(this.getStartingTime(userTest))
+        .testTimes(this.timesDoingTest(userTest))
+        .scores(this.scoreInTimesDoingTest(userTest))
+        .trueQuestions(trueQuestions)
+        .wrongQuestions(this.getWrongQuestions(questions, trueQuestions))
+        .passedTimes(this.getPassedTimes(userTest))
+        .build();
   }
 
   private boolean checkValidUser(Long userId) {
@@ -354,5 +380,55 @@ public class TestDaoImpl implements TestDao {
                   .build();
             })
         .toList();
+  }
+
+  private UserLessonEntity findUserLessonByUserAndLessonId(Long userId, Long lessonId) {
+    return userLessonRepository
+        .findByLessonIdAndUserId(lessonId, userId)
+        .orElseThrow(() -> new NullValueException("this user has not learnt before"));
+  }
+
+  private List<UserTestEntity> findUserTestByUserLessonAndTestId(Long userLessonId, Long testId) {
+    return userTestRepository.findByUserLessonIdAndTestId(userLessonId, testId);
+  }
+
+  private String getUserName(Long userId) {
+    UserEntity user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NullValueException("404 not found this user"));
+    return user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName();
+  }
+
+  private List<OffsetDateTime> getStartingTime(List<UserTestEntity> userTestEntities) {
+    return userTestEntities.stream().map(ut -> ut.getCreated()).toList();
+  }
+
+  private int timesDoingTest(List<UserTestEntity> userTestEntities) {
+    return userTestEntities.size();
+  }
+
+  private List<Float> scoreInTimesDoingTest(List<UserTestEntity> userTestEntities) {
+    return userTestEntities.stream().map(ut -> ut.getScore()).toList();
+  }
+
+  private List<Integer> getTrueQuestions(List<UserTestEntity> userTestEntities, int questions) {
+    List<Integer> result = new ArrayList<>();
+    for (UserTestEntity userTestEntity : userTestEntities) {
+      result.add((int) ((userTestEntity.getScore() * questions)) / 10);
+    }
+    return result;
+  }
+
+  private List<Integer> getWrongQuestions(int questions, List<Integer> trueQuestions) {
+    return trueQuestions.stream().map(tq -> questions - tq).toList();
+  }
+
+  private List<Boolean> getPassedTimes(List<UserTestEntity> userTestEntities) {
+    return userTestEntities.stream().map(ut -> ut.isPassed()).toList();
+  }
+
+  private boolean isDoneTest(List<UserTestEntity> userTestEntities) {
+    return !userTestEntities.isEmpty();
   }
 }

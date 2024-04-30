@@ -11,5 +11,6 @@ public interface RatingDto {
   GetAllRatingLevelResponse getAllRatingLevel();
 
   GetAllCommentTemplateResponse getAllCommentTemplate(Long ratingId);
+
   DoRatingResponse doRating(DoRatingRequest request);
 }

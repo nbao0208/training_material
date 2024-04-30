@@ -1,6 +1,8 @@
 package com.train.trainingmaterial.dao;
 
 import com.train.trainingmaterial.entity.LessonEntity;
+import com.train.trainingmaterial.model.response.lesson.GetLessonReportResponse;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +18,7 @@ public interface LessonDao {
   boolean createLesson(
       Long userId,
       Long categoryId,
+      List<Long> tagId,
       String contentLink,
       String title,
       String intro,
@@ -29,4 +32,6 @@ public interface LessonDao {
       String title,
       String intro,
       Integer timeRemaining);
+
+  GetLessonReportResponse getLessonReport(Long userId, Long lessonId);
 }

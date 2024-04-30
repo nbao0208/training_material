@@ -30,8 +30,10 @@ public class RatingController {
     return ratingService.getAllCommentTemplate(ratingId);
   }
 
-  @PostMapping(value = "",produces = {MediaType.APPLICATION_JSON_VALUE})
-  public Response<DoRatingResponse> doRating(@Valid @RequestBody DoRatingRequest request){
+  @PostMapping(
+      value = "",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<DoRatingResponse> doRating(@Valid @RequestBody DoRatingRequest request) {
     return ratingService.doRating(request);
   }
 }

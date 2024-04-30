@@ -2,6 +2,7 @@ package com.train.trainingmaterial.dao.impl;
 
 import com.train.trainingmaterial.dao.LessonDao;
 import com.train.trainingmaterial.entity.*;
+import com.train.trainingmaterial.model.response.lesson.GetLessonReportResponse;
 import com.train.trainingmaterial.repository.*;
 import com.train.trainingmaterial.shared.constants.GroupID;
 import com.train.trainingmaterial.shared.enums.LessonStatus;
@@ -11,6 +12,7 @@ import com.train.trainingmaterial.shared.exception.WrongValueException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,12 @@ public class LessonDaoImpl implements LessonDao {
   private final ReportRepository reportRepository;
   private final CategoryRepository categoryRepository;
   private final UserGroupRepository userGroupRepository;
+  private final TagRepository tagRepository;
+  private final LessonTagRepository lessonTagRepository;
+  private final CommentRatingRepository commentRatingRepository;
+  private final UserOptionalCommentRepository userOptionalCommentRepository;
+  private final CommentTemplateRepository commentTemplateRepository;
+  private final RatingRepository ratingRepository;
 
   @Override
   public LessonEntity getLesson(Long lessonId, Long userId) {
@@ -74,6 +82,7 @@ public class LessonDaoImpl implements LessonDao {
   public boolean createLesson(
       Long userId,
       Long categoryId,
+      List<Long> tagId,
       String contentLink,
       String title,
       String intro,
@@ -85,7 +94,7 @@ public class LessonDaoImpl implements LessonDao {
         categoryRepository
             .findById(categoryId)
             .orElseThrow(() -> new NullValueException("404 not found this category"));
-    this.saveLessonToDB(categoryEntity, contentLink, title, intro, timeRemaining);
+    this.saveLessonToDB(categoryEntity, tagId, contentLink, title, intro, timeRemaining);
     return true;
   }
 
@@ -103,6 +112,31 @@ public class LessonDaoImpl implements LessonDao {
     }
     this.updateLessonToDb(lessonId, categoryId, contentLink, title, intro, timeRemaining);
     return true;
+  }
+
+  @Override
+  public GetLessonReportResponse getLessonReport(Long userId, Long lessonId) {
+    UserLessonEntity userLesson = this.findUserLessonByUserAndLessonId(userId, lessonId);
+    List<CommentRatingEntity> commentRating =
+        this.findCommentRatingByUserLessonId(userLesson.getId());
+    CommentRatingEntity firstCommentRating = commentRating.getFirst();
+    List<Long> commentTemplateId =
+        commentRating.stream().map(cr -> cr.getCommentTemplateEntity().getId()).toList();
+    if (this.hasRated(commentRating)) {
+      return GetLessonReportResponse.builder()
+          .view(userLesson.getView())
+          .timeReading(userLesson.getTimeReading())
+          .ratingLevel(
+              this.findRatingLevelByCommentTemplateId(
+                  firstCommentRating.getCommentTemplateEntity().getId()))
+          .templateComments(this.findCommentTemplateByListOfId(commentTemplateId))
+          .optionalComment(this.findOptionalComment(firstCommentRating.getId()))
+          .build();
+    }
+    return GetLessonReportResponse.builder()
+        .view(userLesson.getView())
+        .timeReading(userLesson.getTimeReading())
+        .build();
   }
 
   private String rankingFeedback(int evaluation) {
@@ -164,6 +198,16 @@ public class LessonDaoImpl implements LessonDao {
         .orElseThrow(() -> new NullValueException("Don't find any lesson with id " + lessonId));
   }
 
+  private UserLessonEntity findUserLessonByUserAndLessonId(Long userId, Long lessonId) {
+    return userLessonRepository
+        .findByLessonIdAndUserId(lessonId, userId)
+        .orElseThrow(() -> new NullValueException("this user have not learnt before"));
+  }
+
+  private List<CommentRatingEntity> findCommentRatingByUserLessonId(Long userLessonId) {
+    return commentRatingRepository.findByUserLessonId(userLessonId);
+  }
+
   private boolean isValidToTakeAction(Long userId) {
     GroupEntity groupEntity =
         userGroupRepository
@@ -174,18 +218,21 @@ public class LessonDaoImpl implements LessonDao {
 
   private void saveLessonToDB(
       CategoryEntity categoryEntity,
+      List<Long> tagId,
       String contentLink,
       String title,
       String intro,
       int timeRemaining) {
-    lessonRepository.save(
+    LessonEntity lesson =
         LessonEntity.builder()
             .categoryEntity(categoryEntity)
             .contentLink(contentLink)
             .title(title)
             .intro(intro)
             .timeRemaining(timeRemaining)
-            .build());
+            .build();
+    lessonRepository.save(lesson);
+    this.saveLessonTagToDB(tagId, lesson);
   }
 
   private void updateLessonToDb(
@@ -226,5 +273,35 @@ public class LessonDaoImpl implements LessonDao {
 
   private boolean isTimeValid(Integer time) {
     return time != null && time >= 0;
+  }
+
+  private void saveLessonTagToDB(List<Long> tagId, LessonEntity lesson) {
+    List<TagEntity> tagEntities = tagRepository.findByListOfId(tagId);
+    List<LessonTagEntity> lessonTagEntities =
+        tagEntities.stream()
+            .map(tag -> LessonTagEntity.builder().tagEntity(tag).lessonEntity(lesson).build())
+            .toList();
+    lessonTagRepository.saveAll(lessonTagEntities);
+  }
+
+  private boolean hasRated(List<CommentRatingEntity> commentRating) {
+    return !commentRating.isEmpty();
+  }
+
+  private String findOptionalComment(Long commentRatingId) {
+    return userOptionalCommentRepository.findOptionalCommentByCommentRatingId(commentRatingId);
+  }
+
+  private Integer findRatingLevelByCommentTemplateId(Long commentTemplateId) {
+    Long ratingId = commentTemplateRepository.findRatingIdById(commentTemplateId);
+    RatingEntity ratingEntity =
+        ratingRepository
+            .findById(ratingId)
+            .orElseThrow(() -> new NullValueException("404 not found"));
+    return ratingEntity.getLevel();
+  }
+
+  private List<String> findCommentTemplateByListOfId(List<Long> commentTemplateId) {
+    return commentTemplateRepository.findCommentTemplateByListOfId(commentTemplateId);
   }
 }

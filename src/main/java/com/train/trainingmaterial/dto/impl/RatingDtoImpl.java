@@ -21,12 +21,21 @@ public class RatingDtoImpl implements RatingDto {
 
   @Override
   public GetAllCommentTemplateResponse getAllCommentTemplate(Long ratingId) {
-            return
-     GetAllCommentTemplateResponse.builder().commentTemplates(ratingDao.getAllCommentTemplate(ratingId)).build();
+    return GetAllCommentTemplateResponse.builder()
+        .commentTemplates(ratingDao.getAllCommentTemplate(ratingId))
+        .build();
   }
 
   @Override
   public DoRatingResponse doRating(DoRatingRequest request) {
-    return DoRatingResponse.builder().message(ratingDao.doRating(request.getUserId(),request.getLessonId(),request.getRatingId(),request.getCommentTemplateId(),request.getOptionalComment())).build();
+    return DoRatingResponse.builder()
+        .message(
+            ratingDao.doRating(
+                request.getUserId(),
+                request.getLessonId(),
+                request.getRatingId(),
+                request.getCommentTemplateId(),
+                request.getOptionalComment()))
+        .build();
   }
 }

@@ -12,5 +12,6 @@ public interface RatingService {
   Response<GetAllRatingLevelResponse> getAllRatingLevel();
 
   Response<GetAllCommentTemplateResponse> getAllCommentTemplate(Long ratingId);
+
   Response<DoRatingResponse> doRating(DoRatingRequest request);
 }

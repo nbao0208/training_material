@@ -77,4 +77,12 @@ public class TestController {
       @Valid @RequestBody ShowDetailedResultRequest request) {
     return testService.showDetailedResult(testId, lessonId, request);
   }
+
+  @GetMapping(
+      value = "/report",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<GetTestReportResponse> getTestReport(
+      @Valid @RequestBody GetTestReportRequest request) {
+    return testService.getTestReport(request);
+  }
 }

@@ -4,6 +4,7 @@ import com.train.trainingmaterial.entity.AnswerEntity;
 import com.train.trainingmaterial.entity.QuestionEntity;
 import com.train.trainingmaterial.model.request.test.ModifyQuestionDetails;
 import com.train.trainingmaterial.model.request.test.Question;
+import com.train.trainingmaterial.model.response.test.GetTestReportResponse;
 import com.train.trainingmaterial.model.response.test.TestForResponse;
 import java.util.List;
 import java.util.Map;
@@ -28,4 +29,6 @@ public interface TestDao {
   float submitTest(Long testId, Long lessonId, Long userId, List<Map<Long, Boolean>> answerIds);
 
   List<TestForResponse> showDetailedResult(Long testId, Long lessonId, Long userId);
+
+  GetTestReportResponse getTestReport(Long userId, Long testId, Long lessonId);
 }

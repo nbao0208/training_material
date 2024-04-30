@@ -26,12 +26,17 @@ public class RatingServiceImpl implements RatingService {
 
   @Override
   public Response<GetAllCommentTemplateResponse> getAllCommentTemplate(Long ratingId) {
-            return
-     Response.<GetAllCommentTemplateResponse>builder().id(UUID.randomUUID().toString()).data(ratingDto.getAllCommentTemplate(ratingId)).build();
+    return Response.<GetAllCommentTemplateResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(ratingDto.getAllCommentTemplate(ratingId))
+        .build();
   }
 
   @Override
   public Response<DoRatingResponse> doRating(DoRatingRequest request) {
-    return Response.<DoRatingResponse>builder().id(UUID.randomUUID().toString()).data(ratingDto.doRating(request)).build();
+    return Response.<DoRatingResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(ratingDto.doRating(request))
+        .build();
   }
 }

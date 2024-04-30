@@ -18,4 +18,6 @@ public interface LessonService {
   Response<CreateLessonResponse> createLesson(CreateLessonRequest request);
 
   Response<UpdateLessonResponse> updateLesson(Long lessonId, UpdateLessonRequest request);
+
+  Response<GetLessonReportResponse> getLessonReport(GetLessonReportRequest request);
 }

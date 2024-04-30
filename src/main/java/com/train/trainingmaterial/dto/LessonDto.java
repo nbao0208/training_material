@@ -17,4 +17,6 @@ public interface LessonDto {
   CreateLessonResponse createLesson(CreateLessonRequest request);
 
   UpdateLessonResponse updateLesson(Long lessonId, UpdateLessonRequest request);
+
+  GetLessonReportResponse getLessonReport(GetLessonReportRequest request);
 }

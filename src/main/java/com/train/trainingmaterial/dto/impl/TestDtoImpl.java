@@ -73,6 +73,11 @@ public class TestDtoImpl implements TestDto {
         .build();
   }
 
+  @Override
+  public GetTestReportResponse getTestReport(GetTestReportRequest request) {
+    return testDao.getTestReport(request.getUserId(), request.getTestId(), request.getLessonId());
+  }
+
   private List<QuestionWithNoCorrectAnswer> generateFrom(
       List<Map.Entry<QuestionEntity, List<AnswerEntity>>> questions) {
     if (questions.isEmpty()) {
