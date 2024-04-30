@@ -16,4 +16,7 @@ public class ModifyQuestionDetails {
   @NotNull private List<Long> deleteAnswerId;
   @NotNull private List<Long> questionIdForAdding;
   @NotNull private List<Map.Entry<String, Boolean>> addAnswers;
+  @NotNull private List<Long> questionIdForFundamentalField;
+  @NotNull private List<String> questions;
+  @NotNull private List<String> questionTypes;
 }
