@@ -1,7 +1,6 @@
 package com.train.trainingmaterial.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalTime;
 import lombok.*;
 
 @Entity
@@ -30,5 +29,5 @@ public class LessonEntity extends BaseEntity {
   private String intro;
 
   @Column(name = "time_remaining")
-  private LocalTime timeRemaining;
+  private int timeRemaining;
 }

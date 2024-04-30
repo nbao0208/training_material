@@ -126,19 +126,20 @@ public class TestDaoImpl implements TestDao {
       answerRepository.saveAll(modifyAnswersForSave);
     }
     if (!modifyQuestionDetails.getAddAnswers().isEmpty()) {
-      List<AnswerEntity> addAnswers = new ArrayList<>();
-      for (int i = 0; i < modifyQuestionDetails.getAddAnswers().size(); i++) {
-        QuestionEntity questionEntity =
-            questionRepository
-                .findById(modifyQuestionDetails.getQuestionIdForAdding().get(i))
-                .orElseThrow(() -> new NullValueException("404 not found"));
-        addAnswers.add(
-            AnswerEntity.builder()
-                .answer(modifyQuestionDetails.getAddAnswers().get(i).getKey())
-                .isCorrect(modifyQuestionDetails.getAddAnswers().get(i).getValue())
-                .questionEntity(questionEntity)
-                .build());
-      }
+      List<AnswerEntity> addAnswers =
+          modifyQuestionDetails.getAddAnswers().stream()
+              .map(
+                  answer -> {
+                    int index = modifyQuestionDetails.getAddAnswers().indexOf(answer);
+                    QuestionEntity questionEntity =
+                        findQuestionById(modifyQuestionDetails.getQuestionIdForAdding().get(index));
+                    return AnswerEntity.builder()
+                        .answer(answer.getKey())
+                        .isCorrect(answer.getValue())
+                        .questionEntity(questionEntity)
+                        .build();
+                  })
+              .toList();
       answerRepository.saveAll(addAnswers);
     }
   }
@@ -147,5 +148,11 @@ public class TestDaoImpl implements TestDao {
     test.setTitle(title);
     test.setRule(rule);
     testRepository.save(test);
+  }
+
+  private QuestionEntity findQuestionById(long id) {
+    return questionRepository
+        .findById(id)
+        .orElseThrow(() -> new NullValueException("404 not found"));
   }
 }

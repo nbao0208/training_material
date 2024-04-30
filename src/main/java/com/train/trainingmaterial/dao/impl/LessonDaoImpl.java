@@ -8,7 +8,8 @@ import com.train.trainingmaterial.repository.LessonRepository;
 import com.train.trainingmaterial.repository.ReportRepository;
 import com.train.trainingmaterial.repository.UserLessonRepository;
 import com.train.trainingmaterial.repository.UserRepository;
-import com.train.trainingmaterial.shared.constants.RankingValue;
+import com.train.trainingmaterial.shared.enums.LessonStatus;
+import com.train.trainingmaterial.shared.enums.RankingValue;
 import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -53,45 +54,33 @@ public class LessonDaoImpl implements LessonDao {
 
   @Override
   public boolean cancelLesson(Long lessonId, Long userId) {
-    UserLessonEntity userLesson =
-        userLessonRepository
-            .findByLessonIdAndUserId(lessonId, userId)
-            .orElseThrow(() -> new NullValueException("Don't have this user or lesson"));
-    LocalTime timeLearning = this.timeBetween(userLesson.getModified(), OffsetDateTime.now());
-    userLesson.setTimeReading(
-        userLesson
-            .getTimeReading()
-            .plusHours(timeLearning.getHour())
-            .plusMinutes(timeLearning.getMinute())
-            .plusSeconds(timeLearning.getSecond()));
+    UserLessonEntity userLesson = this.trackingStatusForUser(userId,lessonId);
     userLessonRepository.save(userLesson);
     return true;
   }
 
   @Override
   public String evaluateLesson(Long lessonId, Long userId, int evaluation) {
-    UserLessonEntity userLesson =
-        userLessonRepository
-            .findByLessonIdAndUserId(lessonId, userId)
-            .orElseThrow(() -> new NullValueException("OOps not found @@"));
-    LocalTime timeLearning = this.timeBetween(userLesson.getModified(), OffsetDateTime.now());
-    userLesson.setTimeReading(
-        userLesson
-            .getTimeReading()
-            .plusHours(timeLearning.getHour())
-            .plusMinutes(timeLearning.getMinute())
-            .plusSeconds(timeLearning.getSecond()));
+    UserLessonEntity userLesson = this.trackingStatusForUser(userId,lessonId);
     userLesson.setEvaluation(evaluation);
     userLessonRepository.save(userLesson);
     return this.rankingFeedback(evaluation);
   }
 
+  @Override
+  public boolean completeLesson(Long userId, Long lessonId) {
+    UserLessonEntity userLesson = this.trackingStatusForUser(userId,lessonId);
+    userLesson.setReportEntity(reportRepository.findById(LessonStatus.DONE.getStatusId()).orElse(null));
+    userLessonRepository.save(userLesson);
+    return true;
+  }
+
   private String rankingFeedback(int evaluation) {
-    if (evaluation <= RankingValue.TWO_STARTS) {
+    if (evaluation <= RankingValue.TWO_STARS.getStar()) {
       return "We will get better next time";
-    } else if (evaluation == RankingValue.THREE_STARTS) {
+    } else if (evaluation == RankingValue.THREE_STARS.getStar()) {
       return "Thanks for your response";
-    } else if (evaluation == RankingValue.FOUR_STARTS) {
+    } else if (evaluation == RankingValue.FOUR_STARS.getStar()) {
       return "Really appreciate with your response";
     }
     return "Big thanks for you sir/ma am";
@@ -111,7 +100,22 @@ public class LessonDaoImpl implements LessonDao {
         .lessonEntity(lessonEntity)
         .view(1)
         .timeReading(LocalTime.of(0, 0))
-        .reportEntity(reportRepository.findById(2L).orElse(null))
+        .reportEntity(reportRepository.findById(LessonStatus.DOING.getStatusId()).orElse(null))
         .build();
+  }
+
+  private UserLessonEntity trackingStatusForUser(Long userId, Long lessonId){
+    UserLessonEntity userLesson=
+    userLessonRepository
+            .findByLessonIdAndUserId(lessonId, userId)
+            .orElseThrow(() -> new NullValueException("OOps not found @@"));
+    LocalTime timeLearning = this.timeBetween(userLesson.getModified(), OffsetDateTime.now());
+    userLesson.setTimeReading(
+            userLesson
+                    .getTimeReading()
+                    .plusHours(timeLearning.getHour())
+                    .plusMinutes(timeLearning.getMinute())
+                    .plusSeconds(timeLearning.getSecond()));
+    return userLesson;
   }
 }

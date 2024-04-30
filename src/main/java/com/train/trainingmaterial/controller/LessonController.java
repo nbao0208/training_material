@@ -5,6 +5,7 @@ import com.train.trainingmaterial.model.request.lesson.CancelLessonRequest;
 import com.train.trainingmaterial.model.request.lesson.EvaluateLessonRequest;
 import com.train.trainingmaterial.model.request.lesson.GetLessonRequest;
 import com.train.trainingmaterial.model.response.lesson.CancelLessonResponse;
+import com.train.trainingmaterial.model.response.lesson.CompleteLessonResponse;
 import com.train.trainingmaterial.model.response.lesson.EvaluateLessonResponse;
 import com.train.trainingmaterial.model.response.lesson.GetLessonResponse;
 import com.train.trainingmaterial.service.LessonService;
@@ -46,5 +47,10 @@ public class LessonController {
       @PathVariable(value = "lesson_id") Long lessonId,
       @Valid @RequestBody EvaluateLessonRequest request) {
     return lessonService.evaluateLesson(lessonId, request);
+  }
+
+  @PutMapping(value = "/{lesson_id}/user/{user_id}/complete")
+  public Response<CompleteLessonResponse> completeLesson(@PathVariable(value = "user_id")Long userId, @PathVariable(value = "lesson_id") Long lessonId){
+    return lessonService.completeLesson(userId,lessonId);
   }
 }

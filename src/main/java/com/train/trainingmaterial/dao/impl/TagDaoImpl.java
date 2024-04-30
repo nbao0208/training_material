@@ -3,7 +3,7 @@ package com.train.trainingmaterial.dao.impl;
 import com.train.trainingmaterial.dao.TagDao;
 import com.train.trainingmaterial.entity.TagEntity;
 import com.train.trainingmaterial.repository.TagRepository;
-import com.train.trainingmaterial.shared.constants.TagLevelConstant;
+import com.train.trainingmaterial.shared.enums.TagLevelConstant;
 import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -31,8 +31,8 @@ public class TagDaoImpl implements TagDao {
         tagRepository
             .findById(tagId)
             .orElseThrow(() -> new NullValueException("Not Found this tag"));
-    if (tagEntity.getLevel() >= TagLevelConstant.START_LEVEL
-        && tagEntity.getLevel() <= TagLevelConstant.END_LEVEL) {
+    if (tagEntity.getLevel() >= TagLevelConstant.START_LEVEL.getLevel()
+        && tagEntity.getLevel() <= TagLevelConstant.END_LEVEL.getLevel()) {
       tagFromDb.setLevel(tagEntity.getLevel());
     } else {
       return false;
