@@ -27,10 +27,9 @@ public class CommentRatingEntity {
 
   @ManyToOne
   @JoinColumn(
-      name = "tm_user_id",
-      referencedColumnName = "tm_user_id",
-      foreignKey = @ForeignKey(name = "FK_tm_user_id_tm_comment_rating"),
-      unique = true)
+      name = "tm_user_lesson_id",
+      referencedColumnName = "id",
+      foreignKey = @ForeignKey(name = "FK_tm_user_lesson_id_tm_comment_rating"))
   private UserLessonEntity userLessonEntity;
 
   @Column(name = "created")

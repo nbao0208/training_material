@@ -4,7 +4,7 @@ $$
         CREATE TABLE IF NOT EXISTS public."tm_user_test"
         (
             id          BIGSERIAL                NOT NULL PRIMARY KEY,
-            tm_user_id    BIGSERIAL UNIQUE         NOT NULL,
+            tm_user_lesson_id    BIGSERIAL         NOT NULL,
             tm_test_id     BIGSERIAL                NOT NULL,
             score       INT CHECK ( score >= 0 ),
             created     TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -12,14 +12,14 @@ $$
             created_by  VARCHAR(30)              NOT NULL,
             modified_by VARCHAR(30)              NOT NULL,
             is_deleted  BOOLEAN                  NOT NULL,
-            CONSTRAINT FK_tm_user_id_tm_user_test FOREIGN KEY (tm_user_id) REFERENCES public."tm_user_lesson" (tm_user_id),
+            CONSTRAINT FK_tm_user_lesson_id_tm_user_test FOREIGN KEY (tm_user_lesson_id) REFERENCES public."tm_user_lesson" (id),
             CONSTRAINT FK_tm_test_id_tm_user_test FOREIGN KEY (tm_test_id) REFERENCES public."tm_test" (id)
             );
 
         COMMENT ON TABLE public."tm_user_test" IS 'users and test table';
 
         COMMENT ON COLUMN "tm_user_test".id IS 'The ID of this table and this is unique';
-        COMMENT ON COLUMN "tm_user_test".tm_user_id IS 'The user_id from users_lesson that have done the lesson';
+        COMMENT ON COLUMN "tm_user_test".tm_user_lesson_id IS 'The id from users_lesson that have done the lesson';
         COMMENT ON COLUMN "tm_user_test".tm_test_id IS 'The test_id from test table';
         COMMENT ON COLUMN "tm_user_test".score IS 'The score of users doing test';
         COMMENT ON COLUMN "tm_user_test".created IS 'Have been created by who';

@@ -1,11 +1,11 @@
 package com.train.trainingmaterial.controller;
 
 import com.train.trainingmaterial.model.common.Response;
-import com.train.trainingmaterial.model.request.test.AddTestRequest;
-import com.train.trainingmaterial.model.request.test.ModifyTestRequest;
-import com.train.trainingmaterial.model.request.test.ModifyTestRequestTesting;
+import com.train.trainingmaterial.model.request.test.*;
 import com.train.trainingmaterial.model.response.test.AddTestResponse;
+import com.train.trainingmaterial.model.response.test.GetTestResponse;
 import com.train.trainingmaterial.model.response.test.ModifyTestResponse;
+import com.train.trainingmaterial.model.response.test.SubmitTestResponse;
 import com.train.trainingmaterial.service.TestService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -50,5 +50,24 @@ public class TestController {
       @Valid @RequestBody ModifyTestRequestTesting request) {
     log.info("=====>request: " + request.toString());
     return null;
+  }
+
+  @GetMapping(
+      value = "/{test_id}",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<GetTestResponse> getTest(
+      @PathVariable(value = "test_id") Long testId, @Valid @RequestBody GetTestRequest request) {
+    log.info("======>testId: " + testId);
+    return testService.getTest(testId, request);
+  }
+
+  @PutMapping(
+      value = "/{test_id}/lesson/{lesson_id}",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public Response<SubmitTestResponse> submitTest(
+      @PathVariable(value = "test_id") Long testId,
+      @PathVariable(value = "lesson_id") Long lessonId,
+      @Valid @RequestBody SubmitTestRequest request) {
+    return testService.submitTest(testId, lessonId, request);
   }
 }

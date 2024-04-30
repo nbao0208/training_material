@@ -4,21 +4,21 @@ $$
         CREATE TABLE IF NOT EXISTS public."tm_user_answer"
         (
             id          BIGSERIAL                NOT NULL PRIMARY KEY,
-            tm_user_id    BIGSERIAL                NOT NULL,
+            tm_user_test_id    BIGSERIAL                NOT NULL,
             tm_answer_id   BIGSERIAL                NOT NULL,
             created     TIMESTAMP WITH TIME ZONE NOT NULL,
             modified    TIMESTAMP WITH TIME ZONE NOT NULL,
             created_by  VARCHAR(30)              NOT NULL,
             modified_by VARCHAR(30)              NOT NULL,
             is_deleted  BOOLEAN                  NOT NULL,
-            CONSTRAINT FK_tm_user_id_tm_user_answer FOREIGN KEY (tm_user_id) REFERENCES public."tm_user_test" (tm_user_id),
+            CONSTRAINT FK_tm_user_test_id_tm_user_answer FOREIGN KEY (tm_user_test_id) REFERENCES public."tm_user_test" (id),
             CONSTRAINT FK_tm_answer_id_tm_user_answer FOREIGN KEY (tm_answer_id) REFERENCES public."tm_answer" (id)
         );
 
         COMMENT ON TABLE public."tm_user_answer" IS 'The table of users and those answers';
 
         COMMENT ON COLUMN "tm_user_answer".id IS 'The ID of this table and this is unique';
-        COMMENT ON COLUMN "tm_user_answer".tm_user_id IS 'This users ID is take from the users_test table because the users have answer must have been doing test';
+        COMMENT ON COLUMN "tm_user_answer".tm_user_test_id IS 'This ID is take from the users_test table because the users have answer must have been doing test';
         COMMENT ON COLUMN "tm_user_answer".tm_answer_id IS 'This is the answer ID from the answer table';
         COMMENT ON COLUMN "tm_user_answer".created IS 'Have been created by who';
         COMMENT ON COLUMN "tm_user_answer".modified IS 'Have been modified by who';

@@ -8,9 +8,9 @@ public class UserOptionalCommentEntity extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(
-      name = "tm_user_id",
-      referencedColumnName = "tm_user_id",
-      foreignKey = @ForeignKey(name = "FK_tm_user_id_tm_user_optional_comment"))
+      name = "tm_comment_rating_id",
+      referencedColumnName = "id",
+      foreignKey = @ForeignKey(name = "FK_tm_comment_rating_id_tm_user_optional_comment"))
   private CommentRatingEntity commentRatingEntity;
 
   @Column(name = "comment")

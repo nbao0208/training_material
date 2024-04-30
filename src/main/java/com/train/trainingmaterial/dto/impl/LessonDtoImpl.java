@@ -41,7 +41,9 @@ public class LessonDtoImpl implements LessonDto {
 
   @Override
   public CompleteLessonResponse completeLesson(Long userId, Long lessonId) {
-    return CompleteLessonResponse.builder().success(lessonDao.completeLesson(userId,lessonId)).build();
+    return CompleteLessonResponse.builder()
+        .success(lessonDao.completeLesson(userId, lessonId))
+        .build();
   }
 
   private LessonDetailResponse lessonDetailFrom(LessonEntity lessonEntity) {

@@ -8,6 +8,7 @@ $$
             content_link VARCHAR(100)             NOT NULL,
             title        TEXT                     NOT NULL,
             intro        TEXT                     NOT NULL,
+            time_remaining INTEGER                NOT NULL,
             created      TIMESTAMP WITH TIME ZONE NOT NULL,
             modified     TIMESTAMP WITH TIME ZONE NOT NULL,
             created_by   VARCHAR(30)              NOT NULL,

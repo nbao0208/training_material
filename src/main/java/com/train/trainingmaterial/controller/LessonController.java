@@ -50,7 +50,9 @@ public class LessonController {
   }
 
   @PutMapping(value = "/{lesson_id}/user/{user_id}/complete")
-  public Response<CompleteLessonResponse> completeLesson(@PathVariable(value = "user_id")Long userId, @PathVariable(value = "lesson_id") Long lessonId){
-    return lessonService.completeLesson(userId,lessonId);
+  public Response<CompleteLessonResponse> completeLesson(
+      @PathVariable(value = "user_id") Long userId,
+      @PathVariable(value = "lesson_id") Long lessonId) {
+    return lessonService.completeLesson(userId, lessonId);
   }
 }
