@@ -1,18 +1,26 @@
 version: '3.8'
 
 services:
-  # Postgres
   postgres:
     image: postgres:14
     environment:
       POSTGRES_MULTIPLE_DATABASES: training_material
       POSTGRES_USER: baonguyen
-      POSTGRES_PASSWORD: baoisamazing
+      POSTGRES_PASSWORD: 123
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
     ports:
       - "5433:5432"
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: baonguyen
+      MONGO_INITDB_ROOT_PASSWORD: 123
+    ports:
+      - "27017:27017"
     restart: unless-stopped
 
 volumes:
