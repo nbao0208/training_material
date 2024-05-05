@@ -409,13 +409,13 @@ public class TestDaoImpl implements TestDao {
   }
 
   private List<Float> scoreInTimesDoingTest(List<UserTestEntity> userTestEntities) {
-    return userTestEntities.stream().map(ut -> ut.getScore()).toList();
+    return userTestEntities.stream().map(UserTestEntity::getScore).toList();
   }
 
   private List<Integer> getTrueQuestions(List<UserTestEntity> userTestEntities, int questions) {
     List<Integer> result = new ArrayList<>();
     for (UserTestEntity userTestEntity : userTestEntities) {
-      result.add((int) ((userTestEntity.getScore() * questions)) / 10);
+      result.add((int) (userTestEntity.getScore() * questions) / 10);
     }
     return result;
   }
@@ -425,7 +425,7 @@ public class TestDaoImpl implements TestDao {
   }
 
   private List<Boolean> getPassedTimes(List<UserTestEntity> userTestEntities) {
-    return userTestEntities.stream().map(ut -> ut.isPassed()).toList();
+    return userTestEntities.stream().map(UserTestEntity::isPassed).toList();
   }
 
   private boolean isDoneTest(List<UserTestEntity> userTestEntities) {

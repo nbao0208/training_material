@@ -1,4 +1,9 @@
 spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URL:mongodb://mongo_user:m0ng0p4ssw0rd@localhost:27017/?authSource=admin}
+      database: ${MONGODB_DATABASE:dev}
+      auto-index-creation: true
   datasource:
     driver-class-name: org.postgresql.Driver
     password: baoisamazing

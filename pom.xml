@@ -50,6 +50,14 @@
             <version>9.16.3</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <version>3.2.5</version>
+        </dependency>
+
+
         <!-- Utilities -->
         <dependency>
             <groupId>com.google.guava</groupId>
