@@ -6,17 +6,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface LessonDto {
-  GetLessonResponse getLesson(Long lessonId, GetLessonRequest request);
+  <T> GetLessonResponse getLesson(T lessonId, GetLessonRequest request);
 
-  CancelLessonResponse cancelLesson(Long lessonId, CancelLessonRequest request);
+  <T> CancelLessonResponse cancelLesson(T lessonId, CancelLessonRequest request);
 
   EvaluateLessonResponse evaluateLesson(Long lessonId, EvaluateLessonRequest request);
 
   CompleteLessonResponse completeLesson(Long userId, Long lessonId);
 
+  CompleteLessonResponse completeLessonMongo(Long userId, String lessonId);
+
   CreateLessonResponse createLesson(CreateLessonRequest request);
 
-  UpdateLessonResponse updateLesson(Long lessonId, UpdateLessonRequest request);
+  <T> UpdateLessonResponse updateLesson(T lessonId, UpdateLessonRequest request);
 
   GetLessonReportResponse getLessonReport(GetLessonReportRequest request);
 }

@@ -21,7 +21,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: 123
     ports:
       - "27017:27017"
+    volumes:
+      - mongodb:/data/db
     restart: unless-stopped
 
 volumes:
   postgres:
+  mongodb:
