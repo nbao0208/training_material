@@ -4,6 +4,11 @@ spring:
     password: baoisamazing
     url: jdbc:postgresql://localhost:5433/training_material
     username: baonguyen
+  data:
+    mongodb:
+      uri: mongodb://baonguyen:123@localhost:27017
+      authentication-database: admin
+      database: training_material_mongodb
   jpa:
     hibernate:
       ddl-auto: validate

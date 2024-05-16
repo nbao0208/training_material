@@ -5,17 +5,17 @@ import com.train.trainingmaterial.model.request.lesson.*;
 import com.train.trainingmaterial.model.response.lesson.*;
 import com.train.trainingmaterial.service.LessonService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/lesson")
-@AllArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class LessonController {
-  private final LessonService lessonService;
+  private final LessonService lessonServiceImpl;
 
   @GetMapping(
       value = "/{lesson_id}",
@@ -23,7 +23,7 @@ public class LessonController {
   public Response<GetLessonResponse> getLesson(
       @PathVariable(value = "lesson_id") Long lessonId,
       @Valid @RequestBody GetLessonRequest request) {
-    return lessonService.getLesson(lessonId, request);
+    return lessonServiceImpl.getLesson(lessonId, request);
   }
 
   @PostMapping(
@@ -31,7 +31,7 @@ public class LessonController {
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public Response<CreateLessonResponse> createLesson(
       @Valid @RequestBody CreateLessonRequest request) {
-    return lessonService.createLesson(request);
+    return lessonServiceImpl.createLesson(request);
   }
 
   @PutMapping(
@@ -41,7 +41,7 @@ public class LessonController {
       @PathVariable(value = "lesson_id") Long lessonId,
       @Valid @RequestBody UpdateLessonRequest request) {
     log.info("======> request: " + request.toString());
-    return lessonService.updateLesson(lessonId, request);
+    return lessonServiceImpl.updateLesson(lessonId, request);
   }
 
   @PutMapping(
@@ -50,7 +50,7 @@ public class LessonController {
   public Response<CancelLessonResponse> cancelLesson(
       @PathVariable(value = "lesson_id") Long lessonId,
       @Valid @RequestBody CancelLessonRequest request) {
-    return lessonService.cancelLesson(lessonId, request);
+    return lessonServiceImpl.cancelLesson(lessonId, request);
   }
 
   @PutMapping(
@@ -59,14 +59,14 @@ public class LessonController {
   public Response<EvaluateLessonResponse> evaluateLesson(
       @PathVariable(value = "lesson_id") Long lessonId,
       @Valid @RequestBody EvaluateLessonRequest request) {
-    return lessonService.evaluateLesson(lessonId, request);
+    return lessonServiceImpl.evaluateLesson(lessonId, request);
   }
 
   @PutMapping(value = "/{lesson_id}/user/{user_id}/complete")
   public Response<CompleteLessonResponse> completeLesson(
       @PathVariable(value = "user_id") Long userId,
       @PathVariable(value = "lesson_id") Long lessonId) {
-    return lessonService.completeLesson(userId, lessonId);
+    return lessonServiceImpl.completeLesson(userId, lessonId);
   }
 
   @GetMapping(
@@ -74,6 +74,6 @@ public class LessonController {
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public Response<GetLessonReportResponse> getLessonReport(
       @Valid @RequestBody GetLessonReportRequest request) {
-    return lessonService.getLessonReport(request);
+    return lessonServiceImpl.getLessonReport(request);
   }
 }

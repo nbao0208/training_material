@@ -35,7 +35,8 @@ public class SecurityConfiguration {
     "/debug/**",
 
     // Will remove when integrate with Keycloak
-    "/api/v1/**"
+    "/api/v1/**",
+    "/api/v2/**"
   };
 
   @Bean
