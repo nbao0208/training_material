@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:14
     environment:
-      POSTGRES_MULTIPLE_DATABASES: training_material
+      POSTGRES_DB: training_material
       POSTGRES_USER: baonguyen
       POSTGRES_PASSWORD: 123
       PGDATA: /data/postgres
