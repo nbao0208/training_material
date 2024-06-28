@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Data
 @RequiredArgsConstructor
-public class LessonServiceImpl implements LessonService {
-  private final LessonDto lessonDtoImpl;
+public class LessonServiceImplV2 implements LessonService {
+  private final LessonDto lessonDtoImplV2;
 
   @Override
   public <T> Response<GetLessonResponse> getLesson(T lessonId, GetLessonRequest request) {
     return Response.<GetLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDtoImpl.getLesson(lessonId, request))
+        .data(lessonDtoImplV2.getLesson(lessonId, request))
         .build();
   }
 
@@ -28,37 +28,34 @@ public class LessonServiceImpl implements LessonService {
   public <T> Response<CancelLessonResponse> cancelLesson(T lessonId, CancelLessonRequest request) {
     return Response.<CancelLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDtoImpl.cancelLesson(lessonId, request))
+        .data(lessonDtoImplV2.cancelLesson(lessonId, request))
         .build();
   }
 
   @Override
   public Response<EvaluateLessonResponse> evaluateLesson(
       Long lessonId, EvaluateLessonRequest request) {
-    return Response.<EvaluateLessonResponse>builder()
-        .id(UUID.randomUUID().toString())
-        .data(lessonDtoImpl.evaluateLesson(lessonId, request))
-        .build();
+    return null;
   }
 
   @Override
   public Response<CompleteLessonResponse> completeLesson(Long userId, Long lessonId) {
-    return Response.<CompleteLessonResponse>builder()
-        .id(UUID.randomUUID().toString())
-        .data(lessonDtoImpl.completeLesson(userId, lessonId))
-        .build();
+    return null;
   }
 
   @Override
   public Response<CompleteLessonResponse> completeLessonMongo(Long userId, String lessonId) {
-    return null;
+    return Response.<CompleteLessonResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(lessonDtoImplV2.completeLessonMongo(userId, lessonId))
+        .build();
   }
 
   @Override
   public Response<CreateLessonResponse> createLesson(CreateLessonRequest request) {
     return Response.<CreateLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDtoImpl.createLesson(request))
+        .data(lessonDtoImplV2.createLesson(request))
         .build();
   }
 
@@ -66,15 +63,12 @@ public class LessonServiceImpl implements LessonService {
   public <T> Response<UpdateLessonResponse> updateLesson(T lessonId, UpdateLessonRequest request) {
     return Response.<UpdateLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDtoImpl.updateLesson(lessonId, request))
+        .data(lessonDtoImplV2.updateLesson(lessonId, request))
         .build();
   }
 
   @Override
   public Response<GetLessonReportResponse> getLessonReport(GetLessonReportRequest request) {
-    return Response.<GetLessonReportResponse>builder()
-        .id(UUID.randomUUID().toString())
-        .data(lessonDtoImpl.getLessonReport(request))
-        .build();
+    return null;
   }
 }
