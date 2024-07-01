@@ -7,6 +7,7 @@ import com.train.trainingmaterial.entity.QuestionEntity;
 import com.train.trainingmaterial.model.request.test.*;
 import com.train.trainingmaterial.model.response.test.*;
 import com.train.trainingmaterial.shared.constants.MessageResponseForTheSubmittedTest;
+import com.train.trainingmaterial.shared.enums.PassingLevel;
 import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.util.*;
 import lombok.AllArgsConstructor;
@@ -17,15 +18,20 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 @Slf4j
 public class TestDtoImpl implements TestDto {
-  private final TestDao testDao;
+  private final TestDao testDaoImpl;
 
   @Override
   public AddTestResponse addTest(Long lessonId, Long userId, AddTestRequest request) {
     return AddTestResponse.builder()
         .isSuccess(
-            testDao.addTest(
+            testDaoImpl.addTest(
                 lessonId, userId, request.getTitle(), request.getRule(), request.getQuestions()))
         .build();
+  }
+
+  @Override
+  public AddTestResponse addTestByMongo(String lessonId, Long userId, AddTestRequestMongo request) {
+    return null;
   }
 
   @Override
@@ -33,7 +39,7 @@ public class TestDtoImpl implements TestDto {
     log.info("======> request: " + request.toString());
     return ModifyTestResponse.builder()
         .isSuccess(
-            testDao.modifyTest(
+            testDaoImpl.modifyTest(
                 testId,
                 userId,
                 request.getTitle(),
@@ -45,9 +51,15 @@ public class TestDtoImpl implements TestDto {
   }
 
   @Override
+  public ModifyTestResponse modifyTestByMongo(
+      String testId, Long userId, ModifyTestRequestMongo request) {
+    return null;
+  }
+
+  @Override
   public GetTestResponse getTest(Long testId, GetTestRequest request) {
     List<Map.Entry<QuestionEntity, List<AnswerEntity>>> questions =
-        testDao.getTest(testId, request.getUserId(), request.getLessonId());
+        testDaoImpl.getTest(testId, request.getUserId(), request.getLessonId());
     List<QuestionWithNoCorrectAnswer> questionResponse = this.generateFrom(questions);
     return GetTestResponse.builder()
         .questions(questionResponse)
@@ -56,8 +68,14 @@ public class TestDtoImpl implements TestDto {
   }
 
   @Override
+  public GetTestResponse getTestByMongo(String testId, GetTestRequestMongo request) {
+    return null;
+  }
+
+  @Override
   public SubmitTestResponse submitTest(Long testId, Long lessonId, SubmitTestRequest request) {
-    float score = testDao.submitTest(testId, lessonId, request.getUserId(), request.getAnswerIds());
+    float score =
+        testDaoImpl.submitTest(testId, lessonId, request.getUserId(), request.getAnswerIds());
     return SubmitTestResponse.builder()
         .score(score)
         .passed(score >= 5)
@@ -66,16 +84,28 @@ public class TestDtoImpl implements TestDto {
   }
 
   @Override
+  public SubmitTestResponse submitTestByMongo(String testId, SubmitTestRequestMongo request) {
+    return null;
+  }
+
+  @Override
   public ShowDetailedResultResponse showDetailedResult(
       Long testId, Long lessonId, ShowDetailedResultRequest request) {
     return ShowDetailedResultResponse.builder()
-        .tests(testDao.showDetailedResult(testId, lessonId, request.getUserId()))
+        .tests(testDaoImpl.showDetailedResult(testId, lessonId, request.getUserId()))
         .build();
   }
 
   @Override
+  public ShowDetailedResultResponseMongo showDetailedResultMongo(
+      String testId, ShowDetailedResultRequestMongo request) {
+    return null;
+  }
+
+  @Override
   public GetTestReportResponse getTestReport(GetTestReportRequest request) {
-    return testDao.getTestReport(request.getUserId(), request.getTestId(), request.getLessonId());
+    return testDaoImpl.getTestReport(
+        request.getUserId(), request.getTestId(), request.getLessonId());
   }
 
   private List<QuestionWithNoCorrectAnswer> generateFrom(
@@ -99,7 +129,7 @@ public class TestDtoImpl implements TestDto {
   }
 
   private String messageResponseWhenScoreIs(float score) {
-    if (score >= 5) {
+    if (score >= PassingLevel.PASSED_LEVEL.getScoreLevel()) {
       return MessageResponseForTheSubmittedTest.PASSED_MESSAGE;
     }
     return MessageResponseForTheSubmittedTest.UN_PASSED_MESSAGE;

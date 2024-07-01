@@ -223,6 +223,13 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>2.43.0</version>
@@ -295,7 +302,7 @@
                 <configuration>
                    <url>jdbc:postgresql://localhost:5433/training_material</url>
                     <user>baonguyen</user>
-                    <password>baoisamazing</password>
+                    <password>123</password>
                 </configuration>
 
                 <executions>
@@ -308,6 +315,7 @@
                 </executions>
             </plugin>
         </plugins>
+
 
     </build>
 

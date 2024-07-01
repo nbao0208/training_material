@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:14
     environment:
-      POSTGRES_MULTIPLE_DATABASES: training_material
+      POSTGRES_DB: training_material
       POSTGRES_USER: baonguyen
       POSTGRES_PASSWORD: 123
       PGDATA: /data/postgres
@@ -21,7 +21,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: 123
     ports:
       - "27017:27017"
+    volumes:
+      - mongodb:/data/db
     restart: unless-stopped
 
 volumes:
   postgres:
+  mongodb:
