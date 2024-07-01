@@ -2,7 +2,7 @@ package com.train.trainingmaterial.service.impl;
 
 import com.train.trainingmaterial.dto.UserLogInDto;
 import com.train.trainingmaterial.model.common.Response;
-import com.train.trainingmaterial.model.request.user_account.LogInUserRequest;
+import com.train.trainingmaterial.model.request.userAuth.LogInUserRequest;
 import com.train.trainingmaterial.model.response.user_account.LogInUserResponse;
 import com.train.trainingmaterial.service.UserLogInService;
 import java.util.UUID;

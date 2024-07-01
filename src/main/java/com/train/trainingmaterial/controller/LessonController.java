@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/v1/lesson")
 @Slf4j
 @RequiredArgsConstructor
+
 public class LessonController {
   private final LessonService lessonServiceImpl;
 

@@ -1,7 +1,7 @@
 package com.train.trainingmaterial.controller;
 
 import com.train.trainingmaterial.model.common.Response;
-import com.train.trainingmaterial.model.request.user_account.RegisterUserRequest;
+import com.train.trainingmaterial.model.request.userAuth.RegisterUserRequest;
 import com.train.trainingmaterial.model.response.user_account.RegisterUserResponse;
 import com.train.trainingmaterial.service.UserRegisterService;
 import lombok.AllArgsConstructor;
@@ -23,6 +23,7 @@ public class UserRegisterController {
       value = "",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public Response<RegisterUserResponse> registerUser(@RequestBody RegisterUserRequest request) {
-    return userRegisterService.registerUser(request);
+    //    return userRegisterService.registerUser(request);
+    return null;
   }
 }

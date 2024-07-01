@@ -3,7 +3,7 @@ package com.train.trainingmaterial.dto.impl;
 import com.train.trainingmaterial.dao.UserLogInDao;
 import com.train.trainingmaterial.dto.UserLogInDto;
 import com.train.trainingmaterial.entity.UserAccountEntity;
-import com.train.trainingmaterial.model.request.user_account.LogInUserRequest;
+import com.train.trainingmaterial.model.request.userAuth.LogInUserRequest;
 import com.train.trainingmaterial.model.response.user_account.LogInUserResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;

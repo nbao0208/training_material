@@ -1,13 +1,17 @@
-package com.train.trainingmaterial.model.request.user_account;
+package com.train.trainingmaterial.model.request.userAuth;
 
-import com.train.trainingmaterial.model.request.user.BaseUserRequest;
 import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class RegisterUserRequest extends BaseUserRequest {
+public class RegisterUserRequest {
+  private String firstName;
+  private String middleName;
+  private String lastName;
+  private String dob;
+  private String address;
+  private String nationalID;
   private String account;
   private String password;
   private String rewritePassword;

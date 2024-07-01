@@ -1,4 +1,4 @@
-package com.train.trainingmaterial.model.request.user_account;
+package com.train.trainingmaterial.model.request.userAuth;
 
 import lombok.*;
 

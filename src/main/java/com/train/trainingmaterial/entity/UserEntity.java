@@ -6,8 +6,8 @@ import lombok.*;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tm_user")
