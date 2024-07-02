@@ -8,6 +8,7 @@ import com.train.trainingmaterial.service.LessonService;
 import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,6 +18,7 @@ public class LessonServiceImpl implements LessonService {
   private final LessonDto lessonDtoImpl;
 
   @Override
+  @Cacheable(value = "lessonCache", key = "#lessonId")
   public <T> Response<GetLessonResponse> getLesson(T lessonId, GetLessonRequest request) {
     return Response.<GetLessonResponse>builder()
         .id(UUID.randomUUID().toString())
