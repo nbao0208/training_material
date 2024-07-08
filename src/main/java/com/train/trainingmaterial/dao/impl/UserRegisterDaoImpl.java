@@ -1,16 +1,12 @@
 package com.train.trainingmaterial.dao.impl;
 
 import com.train.trainingmaterial.dao.UserRegisterDao;
-import com.train.trainingmaterial.entity.GroupEntity;
 import com.train.trainingmaterial.entity.UserAccountEntity;
 import com.train.trainingmaterial.entity.UserEntity;
-import com.train.trainingmaterial.entity.UserGroupEntity;
 import com.train.trainingmaterial.repository.GroupRepository;
 import com.train.trainingmaterial.repository.UserAccountRepository;
 import com.train.trainingmaterial.repository.UserGroupRepository;
 import com.train.trainingmaterial.repository.UserRepository;
-import com.train.trainingmaterial.shared.constants.GroupID;
-import com.train.trainingmaterial.shared.exception.NullValueException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -24,15 +20,15 @@ public class UserRegisterDaoImpl implements UserRegisterDao {
 
   @Override
   public boolean registerUser(UserAccountEntity userAccount, UserEntity userEntity) {
-    GroupEntity groupEntity =
-        groupRepository
-            .findById(GroupID.STUDENT_ID)
-            .orElseThrow(() -> new NullValueException("404 not found"));
-    userRepository.save(userEntity);
-    userGroupRepository.save(
-        UserGroupEntity.builder().userEntity(userEntity).groupEntity(groupEntity).build());
-    userAccount.setUserEntity(userEntity);
-    userAccountRepository.save(userAccount);
+    //    GroupEntity groupEntity =
+    //        groupRepository
+    //            .findById(GroupID.STUDENT_ID)
+    //            .orElseThrow(() -> new NullValueException("404 not found"));
+    //    userRepository.save(userEntity);
+    //    userGroupRepository.save(
+    //        UserGroupEntity.builder().userEntity(userEntity).groupEntity(groupEntity).build());
+    //    userAccount.setUserEntity(userEntity);
+    //    userAccountRepository.save(userAccount);
     return true;
   }
 }

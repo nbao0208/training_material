@@ -5,28 +5,33 @@ import com.train.trainingmaterial.model.common.Response;
 import com.train.trainingmaterial.model.request.lesson.*;
 import com.train.trainingmaterial.model.response.lesson.*;
 import com.train.trainingmaterial.service.LessonService;
+import com.train.trainingmaterial.shared.constants.CacheNames;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@AllArgsConstructor
+@Data
+@RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
-  private final LessonDto lessonDto;
+  private final LessonDto lessonDtoImpl;
 
   @Override
-  public Response<GetLessonResponse> getLesson(Long lessonId, GetLessonRequest request) {
+  @Cacheable(value = CacheNames.LESSON_CACHE, key = "#lessonId")
+  public <T> Response<GetLessonResponse> getLesson(T lessonId, GetLessonRequest request) {
     return Response.<GetLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDto.getLesson(lessonId, request))
+        .data(lessonDtoImpl.getLesson(lessonId, request))
         .build();
   }
 
   @Override
-  public Response<CancelLessonResponse> cancelLesson(Long lessonId, CancelLessonRequest request) {
+  public <T> Response<CancelLessonResponse> cancelLesson(T lessonId, CancelLessonRequest request) {
     return Response.<CancelLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDto.cancelLesson(lessonId, request))
+        .data(lessonDtoImpl.cancelLesson(lessonId, request))
         .build();
   }
 
@@ -35,7 +40,7 @@ public class LessonServiceImpl implements LessonService {
       Long lessonId, EvaluateLessonRequest request) {
     return Response.<EvaluateLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDto.evaluateLesson(lessonId, request))
+        .data(lessonDtoImpl.evaluateLesson(lessonId, request))
         .build();
   }
 
@@ -43,23 +48,28 @@ public class LessonServiceImpl implements LessonService {
   public Response<CompleteLessonResponse> completeLesson(Long userId, Long lessonId) {
     return Response.<CompleteLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDto.completeLesson(userId, lessonId))
+        .data(lessonDtoImpl.completeLesson(userId, lessonId))
         .build();
+  }
+
+  @Override
+  public Response<CompleteLessonResponse> completeLessonMongo(Long userId, String lessonId) {
+    return null;
   }
 
   @Override
   public Response<CreateLessonResponse> createLesson(CreateLessonRequest request) {
     return Response.<CreateLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDto.createLesson(request))
+        .data(lessonDtoImpl.createLesson(request))
         .build();
   }
 
   @Override
-  public Response<UpdateLessonResponse> updateLesson(Long lessonId, UpdateLessonRequest request) {
+  public <T> Response<UpdateLessonResponse> updateLesson(T lessonId, UpdateLessonRequest request) {
     return Response.<UpdateLessonResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDto.updateLesson(lessonId, request))
+        .data(lessonDtoImpl.updateLesson(lessonId, request))
         .build();
   }
 
@@ -67,7 +77,7 @@ public class LessonServiceImpl implements LessonService {
   public Response<GetLessonReportResponse> getLessonReport(GetLessonReportRequest request) {
     return Response.<GetLessonReportResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(lessonDto.getLessonReport(request))
+        .data(lessonDtoImpl.getLessonReport(request))
         .build();
   }
 }
