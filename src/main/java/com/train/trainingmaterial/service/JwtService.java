@@ -2,6 +2,7 @@ package com.train.trainingmaterial.service;
 
 import com.train.trainingmaterial.entity.UserAccountEntity;
 import com.train.trainingmaterial.repository.UserAccountRepository;
+import com.train.trainingmaterial.shared.constants.CacheNames;
 import com.train.trainingmaterial.shared.constants.TokenSecretInformation;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class JwtService {
   private final UserAccountRepository userAccountRepository;
 
+  @Cacheable(value = CacheNames.TOKEN_CACHE, key = "#user.id.toString()")
   public String generateJwtToken(Map<String, Object> claims, UserAccountEntity user) {
     return Jwts.builder()
         .setClaims(claims)
@@ -35,12 +38,17 @@ public class JwtService {
         .compact();
   }
 
+  @Cacheable(value = CacheNames.TOKEN_CACHE, key = "#user.id.toString()")
   public String generateJwtToken(UserAccountEntity user) {
+    // do not use the cache of this endpoint function
     return this.generateJwtToken(new HashMap<>(), user);
   }
 
   public boolean isTokenValid(String token) {
-    UserAccountEntity user = userAccountRepository.findByAccount(this.extractUsername(token)).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+    UserAccountEntity user =
+        userAccountRepository
+            .findByAccount(this.extractUsername(token))
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     log.info("=====>user account: " + user);
     return !this.isTokenExpired(token);
   }

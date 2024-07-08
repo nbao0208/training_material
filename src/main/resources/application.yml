@@ -9,6 +9,19 @@ spring:
       uri: mongodb://baonguyen:123@localhost:27017
       authentication-database: admin
       database: training_material_mongodb
+
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 300 #time the redis wait for the action on it
+      password: 123
+      url: redis://123@localhost:6379
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 9
+          min-idle: 1
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -19,9 +32,7 @@ spring:
   flyway:
     enabled: true
 
-#  cache:
-#    jcache:
-#      config: ehcache.xml
+
 
 server:
     servlet:

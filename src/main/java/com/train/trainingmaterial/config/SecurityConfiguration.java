@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +24,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
   private final AuthenticationProvider authenticationProvider;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
-  private static final String[] AUTH_WHITELIST = {
+  private final LogoutHandler logoutHandler;
+  private final LogoutSuccessHandler logoutSuccessHandler;
+  public static final String[] AUTH_WHITELIST = {
     // Swagger
     "/api-docs",
     "/v3/api-docs",
@@ -85,8 +89,8 @@ public class SecurityConfiguration {
                   .requestMatchers(HttpMethod.GET, "/api/v1/lesson/*")
                   .hasAuthority(Authority.STUDENT_GET_LESSON.getAuthority())
                   //
-//                  .requestMatchers(HttpMethod.POST, "/api/v1/lesson/create")
-//                  .hasAuthority(Authority.TEACHER_POST_LESSON.getAuthority())
+                  //                  .requestMatchers(HttpMethod.POST, "/api/v1/lesson/create")
+                  //                  .hasAuthority(Authority.TEACHER_POST_LESSON.getAuthority())
                   //
                   .requestMatchers(HttpMethod.PUT, "/api/v1/lesson/*")
                   .hasAuthority(Authority.TEACHER_UPDATE_LESSON.getAuthority())
@@ -128,16 +132,26 @@ public class SecurityConfiguration {
                   //
                   .requestMatchers(HttpMethod.POST, "/api/v1/rating/")
                   .hasAuthority(Authority.STUDENT_POST_RATING.getAuthority())
-                  //
-                  ;
-              //the rest request should go through the filters
-              authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.POST, "/api/v1/lesson/create")
-                      .hasAuthority(Authority.TEACHER_POST_LESSON.getAuthority()).anyRequest().authenticated();
+              //
+              ;
+              // the rest request should go through the filters
+              authorizationManagerRequestMatcherRegistry
+                  .requestMatchers(HttpMethod.POST, "/api/v1/lesson/create")
+                  .hasAuthority(Authority.TEACHER_POST_LESSON.getAuthority())
+                  .anyRequest()
+                  .authenticated();
             })
         // Add the authentication provider for helping authenticate
         .authenticationProvider(authenticationProvider)
         // Add jwt filter before the UPA filter
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl("/api/v1/user/logout")
+                    .addLogoutHandler(logoutHandler)
+                    .logoutSuccessHandler(logoutSuccessHandler))
         .build();
   }
+
 }
