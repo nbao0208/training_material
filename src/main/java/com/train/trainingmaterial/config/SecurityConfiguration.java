@@ -89,13 +89,13 @@ public class SecurityConfiguration {
                   .requestMatchers(HttpMethod.GET, "/api/v1/lesson/*")
                   .hasAuthority(Authority.STUDENT_GET_LESSON.getAuthority())
                   //
-                  //                  .requestMatchers(HttpMethod.POST, "/api/v1/lesson/create")
-                  //                  .hasAuthority(Authority.TEACHER_POST_LESSON.getAuthority())
+                  .requestMatchers(HttpMethod.POST, "/api/v1/lesson/create")
+                  .hasAuthority(Authority.TEACHER_POST_LESSON.getAuthority())
                   //
-                  .requestMatchers(HttpMethod.PUT, "/api/v1/lesson/*")
+                  .requestMatchers(HttpMethod.PUT, "/api/v1/lesson/")
                   .hasAuthority(Authority.TEACHER_UPDATE_LESSON.getAuthority())
                   //
-                  .requestMatchers(HttpMethod.PUT, "/api/v1/lesson/cancel/*")
+                  .requestMatchers(HttpMethod.PUT, "/api/v1/lesson/cancel/")
                   .hasAuthority(Authority.STUDENT_CANCEL_LESSON.getAuthority())
                   //
                   .requestMatchers(HttpMethod.PUT, "/api/v1/lesson/*/user/*/complete")
@@ -153,5 +153,4 @@ public class SecurityConfiguration {
                     .logoutSuccessHandler(logoutSuccessHandler))
         .build();
   }
-
 }

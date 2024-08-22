@@ -203,7 +203,7 @@ public class LessonDaoImpl implements LessonDao {
         .orElseThrow(() -> new NullValueException("Don't find any user with id " + userId));
   }
 
-  private LessonEntity findLessonByLessonId(Long lessonId) {
+  public LessonEntity findLessonByLessonId(Long lessonId) {
     return lessonRepository
         .findById(lessonId)
         .orElseThrow(() -> new NullValueException("Don't find any lesson with id " + lessonId));

@@ -31,6 +31,7 @@ public class RedisConfiguration {
     Map<String, RedisCacheConfiguration> multipleCachesConfiguration =
         Map.of(
             CacheNames.LESSON_CACHE, defaultCacheConfiguration.entryTtl(Duration.ofHours(1)),
+            CacheNames.TEST_CACHE, defaultCacheConfiguration.entryTtl(Duration.ofHours(1)),
             CacheNames.TOKEN_CACHE,
                 defaultCacheConfiguration.entryTtl(
                     Duration.ofMillis(TokenSecretInformation.EXPIRED)));

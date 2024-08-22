@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
     final String requestURI = request.getRequestURI();
-    //any request satisfy with the condition is requestURI start with will return true, otherwise return false
-    if (Arrays.stream(WhiteListRequest.WHITE_LIST).anyMatch(whiteRequest->requestURI.startsWith(whiteRequest))){
+    // any request satisfy with the condition is requestURI start with will return true, otherwise
+    // return false
+    if (Arrays.stream(WhiteListRequest.WHITE_LIST)
+        .anyMatch(whiteRequest -> requestURI.startsWith(whiteRequest))) {
       filterChain.doFilter(request, response);
       return;
     }
