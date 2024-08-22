@@ -4,7 +4,7 @@ import com.train.trainingmaterial.dao.UserRegisterDao;
 import com.train.trainingmaterial.dto.UserRegisterDto;
 import com.train.trainingmaterial.entity.UserAccountEntity;
 import com.train.trainingmaterial.entity.UserEntity;
-import com.train.trainingmaterial.model.request.user_account.RegisterUserRequest;
+import com.train.trainingmaterial.model.request.userAuth.RegisterUserRequest;
 import com.train.trainingmaterial.model.response.user_account.RegisterUserResponse;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

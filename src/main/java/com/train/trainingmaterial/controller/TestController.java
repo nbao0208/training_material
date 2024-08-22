@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Slf4j
 public class TestController {
-  private final TestService testService;
+  private final TestService testServiceImpl;
 
   @PostMapping(
       value = "/lesson/{lesson_id}/user/{user_id}",
@@ -25,7 +25,7 @@ public class TestController {
       @PathVariable(value = "user_id") Long userId,
       @Valid @RequestBody AddTestRequest request) {
     log.info(request.toString());
-    return testService.addTest(lessonId, userId, request);
+    return testServiceImpl.addTest(lessonId, userId, request);
   }
 
   @PutMapping(
@@ -37,7 +37,7 @@ public class TestController {
       @PathVariable(value = "user_id") Long userId,
       @Valid @RequestBody ModifyTestRequest request) {
     log.info("=====> request: " + request.toString());
-    return testService.modifyTest(testId, userId, request);
+    return testServiceImpl.modifyTest(testId, userId, request);
   }
 
   @PutMapping(
@@ -55,7 +55,7 @@ public class TestController {
   public Response<GetTestResponse> getTest(
       @PathVariable(value = "test_id") Long testId, @Valid @RequestBody GetTestRequest request) {
     log.info("======>testId: " + testId);
-    return testService.getTest(testId, request);
+    return testServiceImpl.getTest(testId, request);
   }
 
   @PutMapping(
@@ -65,7 +65,7 @@ public class TestController {
       @PathVariable(value = "test_id") Long testId,
       @PathVariable(value = "lesson_id") Long lessonId,
       @Valid @RequestBody SubmitTestRequest request) {
-    return testService.submitTest(testId, lessonId, request);
+    return testServiceImpl.submitTest(testId, lessonId, request);
   }
 
   @GetMapping(
@@ -75,7 +75,7 @@ public class TestController {
       @PathVariable(value = "test_id") Long testId,
       @PathVariable(value = "lesson_id") Long lessonId,
       @Valid @RequestBody ShowDetailedResultRequest request) {
-    return testService.showDetailedResult(testId, lessonId, request);
+    return testServiceImpl.showDetailedResult(testId, lessonId, request);
   }
 
   @GetMapping(
@@ -83,6 +83,6 @@ public class TestController {
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public Response<GetTestReportResponse> getTestReport(
       @Valid @RequestBody GetTestReportRequest request) {
-    return testService.getTestReport(request);
+    return testServiceImpl.getTestReport(request);
   }
 }

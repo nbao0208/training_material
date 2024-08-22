@@ -4,9 +4,8 @@ import com.train.trainingmaterial.dao.TestDao;
 import com.train.trainingmaterial.entity.*;
 import com.train.trainingmaterial.model.request.test.ModifyQuestionDetails;
 import com.train.trainingmaterial.model.request.test.Question;
-import com.train.trainingmaterial.model.response.test.GetTestReportResponse;
-import com.train.trainingmaterial.model.response.test.QuestionForResponse;
-import com.train.trainingmaterial.model.response.test.TestForResponse;
+import com.train.trainingmaterial.model.response.test.*;
+import com.train.trainingmaterial.model.test.SelectedAnswerPerQuestion;
 import com.train.trainingmaterial.repository.*;
 import com.train.trainingmaterial.shared.constants.GroupID;
 import com.train.trainingmaterial.shared.enums.PassingLevel;
@@ -50,6 +49,16 @@ public class TestDaoImpl implements TestDao {
   }
 
   @Override
+  public boolean addTestByMongo(
+      String lessonId,
+      Long userId,
+      String title,
+      String description,
+      List<com.train.trainingmaterial.model.test.Question> questions) {
+    return false;
+  }
+
+  @Override
   public boolean modifyTest(
       Long testId,
       Long userId,
@@ -82,6 +91,16 @@ public class TestDaoImpl implements TestDao {
   }
 
   @Override
+  public boolean modifyTestByMongo(
+      String testId,
+      Long userId,
+      String newTitle,
+      String newDescription,
+      List<com.train.trainingmaterial.model.test.Question> newQuestions) {
+    return false;
+  }
+
+  @Override
   public List<Map.Entry<QuestionEntity, List<AnswerEntity>>> getTest(
       Long testId, Long userId, Long lessonId) {
     if (!this.isExist(lessonId, userId)) {
@@ -100,6 +119,12 @@ public class TestDaoImpl implements TestDao {
   }
 
   @Override
+  public List<QuestionWithNoCorrectAnswer> getTestByMongo(
+      String testId, Long userId, String lessonId) {
+    return List.of();
+  }
+
+  @Override
   public float submitTest(
       Long testId, Long lessonId, Long userId, List<Map<Long, Boolean>> answerIds) {
     for (Map<Long, Boolean> answerId : answerIds) {
@@ -112,6 +137,15 @@ public class TestDaoImpl implements TestDao {
     UserTestEntity userTest = this.saveUserTest(lessonId, userId, testId, score);
     this.saveUserAnswer(userAnswers, userTest);
     return score;
+  }
+
+  @Override
+  public float submitTestByMongo(
+      String testId,
+      String lessonId,
+      Long userId,
+      List<SelectedAnswerPerQuestion> selectedAnswerPerQuestions) {
+    return 0;
   }
 
   @Override
@@ -131,6 +165,12 @@ public class TestDaoImpl implements TestDao {
             .map(question -> answerRepository.findByQuestionId(question.getId()))
             .toList();
     return this.takeTestForResponse(userTests, questions, answersOfAllQuestions);
+  }
+
+  @Override
+  public List<TestForResponseMongo> showDetailedResultMongo(
+      String testId, Long userId, String lessonId) {
+    return List.of();
   }
 
   @Override
@@ -156,11 +196,9 @@ public class TestDaoImpl implements TestDao {
   }
 
   private boolean checkValidUser(Long userId) {
-    GroupEntity groupEntity =
-        userGroupRepository
-            .roleOf(userId)
-            .orElseThrow(() -> new NullValueException("Invalid value"));
-    return groupEntity.getId() == GroupID.TEACHER_ID;
+    List<GroupEntity> groupEntitiesOfUser = userGroupRepository.roleOf(userId);
+    return groupEntitiesOfUser.size() == GroupID.ROLES_ID
+        || groupEntitiesOfUser.getFirst().getId() == GroupID.TEACHER_ID;
   }
 
   private void addQuestion(List<Question> addQuestions, TestEntity test) {
@@ -415,7 +453,7 @@ public class TestDaoImpl implements TestDao {
   private List<Integer> getTrueQuestions(List<UserTestEntity> userTestEntities, int questions) {
     List<Integer> result = new ArrayList<>();
     for (UserTestEntity userTestEntity : userTestEntities) {
-      result.add((int) ((userTestEntity.getScore() * questions)) / 10);
+      result.add((int) (userTestEntity.getScore() * questions) / 10);
     }
     return result;
   }
