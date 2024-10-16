@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@Table(name = "tm_tag")
+@Table(name = "tm_tag", schema = "public")
 public class TagEntity extends BaseEntity {
 
   @Column(name = "level", columnDefinition = "INT CHECK ( level >= 1 AND tag.level <= 3)")

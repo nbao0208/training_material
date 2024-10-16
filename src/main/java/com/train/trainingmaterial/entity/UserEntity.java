@@ -6,11 +6,11 @@ import lombok.*;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tm_user")
+@Table(name = "tm_user", schema = "public")
 public class UserEntity extends BaseEntity {
 
   @Column(name = "first_name", length = 30)

@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tm_rating")
+@Table(name = "tm_rating", schema = "public")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor

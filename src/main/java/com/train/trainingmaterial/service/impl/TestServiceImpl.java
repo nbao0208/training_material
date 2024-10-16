@@ -17,14 +17,20 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 @Slf4j
 public class TestServiceImpl implements TestService {
-  private final TestDto testDto;
+  private final TestDto testDtoImpl;
 
   @Override
   public Response<AddTestResponse> addTest(Long lessonId, Long userId, AddTestRequest request) {
     return Response.<AddTestResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(testDto.addTest(lessonId, userId, request))
+        .data(testDtoImpl.addTest(lessonId, userId, request))
         .build();
+  }
+
+  @Override
+  public Response<AddTestResponse> addTestByMongo(
+      String lessonId, Long userId, AddTestRequestMongo request) {
+    return null;
   }
 
   @Override
@@ -33,13 +39,19 @@ public class TestServiceImpl implements TestService {
     log.info("=======> request: " + request.toString());
     return Response.<ModifyTestResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(testDto.modifyTest(testId, userId, request))
+        .data(testDtoImpl.modifyTest(testId, userId, request))
         .build();
   }
 
   @Override
+  public Response<ModifyTestResponse> modifyTestByMongo(
+      String testId, Long userId, ModifyTestRequestMongo request) {
+    return null;
+  }
+
+  @Override
   public Response<GetTestResponse> getTest(Long testId, GetTestRequest request) {
-    GetTestResponse response = testDto.getTest(testId, request);
+    GetTestResponse response = testDtoImpl.getTest(testId, request);
     List<QuestionWithNoCorrectAnswer> temp = new ArrayList<>(response.getQuestions());
     Collections.shuffle(temp);
     response.setQuestions(temp);
@@ -50,12 +62,23 @@ public class TestServiceImpl implements TestService {
   }
 
   @Override
+  public Response<GetTestResponse> getTestByMongo(String testId, GetTestRequestMongo request) {
+    return null;
+  }
+
+  @Override
   public Response<SubmitTestResponse> submitTest(
       Long testId, Long lessonId, SubmitTestRequest request) {
     return Response.<SubmitTestResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(testDto.submitTest(testId, lessonId, request))
+        .data(testDtoImpl.submitTest(testId, lessonId, request))
         .build();
+  }
+
+  @Override
+  public Response<SubmitTestResponse> submitTestByMongo(
+      String testId, SubmitTestRequestMongo request) {
+    return null;
   }
 
   @Override
@@ -63,15 +86,21 @@ public class TestServiceImpl implements TestService {
       Long testId, Long lessonId, ShowDetailedResultRequest request) {
     return Response.<ShowDetailedResultResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(testDto.showDetailedResult(testId, lessonId, request))
+        .data(testDtoImpl.showDetailedResult(testId, lessonId, request))
         .build();
+  }
+
+  @Override
+  public Response<ShowDetailedResultResponseMongo> showDetailedResultMongo(
+      String testId, ShowDetailedResultRequestMongo request) {
+    return null;
   }
 
   @Override
   public Response<GetTestReportResponse> getTestReport(GetTestReportRequest request) {
     return Response.<GetTestReportResponse>builder()
         .id(UUID.randomUUID().toString())
-        .data(testDto.getTestReport(request))
+        .data(testDtoImpl.getTestReport(request))
         .build();
   }
 }

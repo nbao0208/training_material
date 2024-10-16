@@ -8,6 +8,8 @@ import lombok.*;
 @MappedSuperclass
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

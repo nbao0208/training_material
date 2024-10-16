@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:14
     environment:
-      POSTGRES_MULTIPLE_DATABASES: training_material
+      POSTGRES_DB: training_material
       POSTGRES_USER: baonguyen
       POSTGRES_PASSWORD: 123
       PGDATA: /data/postgres
@@ -21,7 +21,26 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: 123
     ports:
       - "27017:27017"
+    volumes:
+      - mongodb:/data/db
     restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    environment:
+       REDIS_PASSWORD: 123
+       REDIS_USER:  baonguyen
+    volumes:
+      - redis_data:/data/cache_db
+
+    #redis start with AOF(Append file only) mode which can save all the action that happen with redis
+    #when happening some accident, it can restore the redis db
+    command: redis-server --requirepass 123 --appendonly yes
 
 volumes:
   postgres:
+  mongodb:
+  redis_data:

@@ -3,8 +3,11 @@ package com.train.trainingmaterial.dao.impl;
 import com.train.trainingmaterial.dao.LessonDao;
 import com.train.trainingmaterial.entity.*;
 import com.train.trainingmaterial.model.response.lesson.GetLessonReportResponse;
+import com.train.trainingmaterial.model.response.lesson.LessonDetailResponse;
 import com.train.trainingmaterial.repository.*;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.GroupID;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import com.train.trainingmaterial.shared.enums.LessonStatus;
 import com.train.trainingmaterial.shared.enums.RankingValue;
 import com.train.trainingmaterial.shared.exception.NullValueException;
@@ -37,26 +40,29 @@ public class LessonDaoImpl implements LessonDao {
   private final RatingRepository ratingRepository;
 
   @Override
-  public LessonEntity getLesson(Long lessonId, Long userId) {
+  public <T> LessonDetailResponse getLesson(T lessonId, Long userId) {
     UserLessonEntity userLesson =
-        userLessonRepository.findByLessonIdAndUserId(lessonId, userId).orElse(null);
+        userLessonRepository.findByLessonIdAndUserId((Long) lessonId, userId).orElse(null);
+    LessonEntity lessonEntity = this.findLessonByLessonId((Long) lessonId);
     if (userLesson == null) {
       UserEntity userEntity = this.findUserByUserId(userId);
-      LessonEntity lessonEntity = this.findLessonByLessonId(lessonId);
       userLesson = this.generateFrom(userEntity, lessonEntity);
       userLessonRepository.save(userLesson);
-      return lessonEntity;
+    } else {
+      userLesson.setView(userLesson.getView() + 1);
+      userLessonRepository.save(userLesson);
     }
-    userLesson.setView(userLesson.getView() + 1);
-    userLessonRepository.save(userLesson);
-    return lessonRepository
-        .findById(lessonId)
-        .orElseThrow(() -> new NullValueException("Don't find any lesson with id " + lessonId));
+    return LessonDetailResponse.builder()
+        .title(lessonEntity.getTitle())
+        .intro(lessonEntity.getIntro())
+        .contentLink(lessonEntity.getContentLink())
+        .timeRemaining(lessonEntity.getTimeRemaining())
+        .build();
   }
 
   @Override
-  public boolean cancelLesson(Long lessonId, Long userId) {
-    UserLessonEntity userLesson = this.trackingStatusForUser(userId, lessonId);
+  public <T> boolean cancelLesson(T lessonId, Long userId) {
+    UserLessonEntity userLesson = this.trackingStatusForUser(userId, (Long) lessonId);
     userLessonRepository.save(userLesson);
     return true;
   }
@@ -79,6 +85,11 @@ public class LessonDaoImpl implements LessonDao {
   }
 
   @Override
+  public boolean completeLessonMongo(Long userId, String lessonId) {
+    return false;
+  }
+
+  @Override
   public boolean createLesson(
       Long userId,
       Long categoryId,
@@ -88,7 +99,7 @@ public class LessonDaoImpl implements LessonDao {
       String intro,
       int timeRemaining) {
     if (!this.isValidToTakeAction(userId)) {
-      throw new WrongValueException("This user can't have enough level to create lesson");
+      throw new WrongValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     CategoryEntity categoryEntity =
         categoryRepository
@@ -99,18 +110,20 @@ public class LessonDaoImpl implements LessonDao {
   }
 
   @Override
-  public boolean updateLesson(
-      Long lessonId,
+  public <T> boolean updateLesson(
+      T lessonId,
       Long userId,
       Long categoryId,
+      List<Long> tagId,
       String contentLink,
       String title,
       String intro,
       Integer timeRemaining) {
     if (!this.isValidToTakeAction(userId)) {
-      throw new NullValueException("404 not found");
+      throw new NullValueException(ErrorMessage.NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR);
     }
-    this.updateLessonToDb(lessonId, categoryId, contentLink, title, intro, timeRemaining);
+    this.updateLessonToDb(
+        (Long) lessonId, categoryId, tagId, contentLink, title, intro, timeRemaining);
     return true;
   }
 
@@ -141,7 +154,7 @@ public class LessonDaoImpl implements LessonDao {
 
   private String rankingFeedback(int evaluation) {
     if (evaluation <= 0 || evaluation > RankingValue.FIVE_STARTS.getStar()) {
-      throw new WrongValueException("Error value of evaluation");
+      throw new WrongValueException(ErrorMessage.OUT_OF_RANGE, ErrorCodes.WRONG_VALUE_ERROR);
     }
     if (evaluation <= RankingValue.TWO_STARS.getStar()) {
       return "We will get better next time";
@@ -175,7 +188,7 @@ public class LessonDaoImpl implements LessonDao {
     UserLessonEntity userLesson =
         userLessonRepository
             .findByLessonIdAndUserId(lessonId, userId)
-            .orElseThrow(() -> new NullValueException("OOps not found @@"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
     LocalTime timeLearning = this.timeBetween(userLesson.getModified(), OffsetDateTime.now());
     userLesson.setTimeReading(
         userLesson
@@ -189,19 +202,19 @@ public class LessonDaoImpl implements LessonDao {
   private UserEntity findUserByUserId(Long userId) {
     return userRepository
         .findById(userId)
-        .orElseThrow(() -> new NullValueException("Don't find any user with id " + userId));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.USER_NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR));
   }
 
-  private LessonEntity findLessonByLessonId(Long lessonId) {
+  public LessonEntity findLessonByLessonId(Long lessonId) {
     return lessonRepository
         .findById(lessonId)
-        .orElseThrow(() -> new NullValueException("Don't find any lesson with id " + lessonId));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
   }
 
   private UserLessonEntity findUserLessonByUserAndLessonId(Long userId, Long lessonId) {
     return userLessonRepository
         .findByLessonIdAndUserId(lessonId, userId)
-        .orElseThrow(() -> new NullValueException("this user have not learnt before"));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS,ErrorCodes.PERMISSION_DENIED));
   }
 
   private List<CommentRatingEntity> findCommentRatingByUserLessonId(Long userLessonId) {
@@ -209,11 +222,9 @@ public class LessonDaoImpl implements LessonDao {
   }
 
   private boolean isValidToTakeAction(Long userId) {
-    GroupEntity groupEntity =
-        userGroupRepository
-            .roleOf(userId)
-            .orElseThrow(() -> new NullValueException("404 not found"));
-    return groupEntity.getId() == GroupID.TEACHER_ID;
+    List<GroupEntity> groupEntitiesOfUser = userGroupRepository.roleOf(userId);
+    return groupEntitiesOfUser.size() == GroupID.ROLES_ID
+        || groupEntitiesOfUser.getFirst().getId() == GroupID.TEACHER_ID;
   }
 
   private void saveLessonToDB(
@@ -238,6 +249,7 @@ public class LessonDaoImpl implements LessonDao {
   private void updateLessonToDb(
       Long lessonId,
       Long categoryId,
+      List<Long> tagId,
       String contentLink,
       String title,
       String intro,
@@ -255,6 +267,24 @@ public class LessonDaoImpl implements LessonDao {
               .findById(categoryId)
               .orElseThrow(() -> new NullValueException("404 not found"));
       lessonEntity.setCategoryEntity(categoryEntity);
+    }
+    if (!tagId.isEmpty()) {
+      List<LessonTagEntity> lessonTagEntities =
+          lessonTagRepository.getAllLessonTagWithLessonId(lessonId);
+      log.info("=====> tag entity: " + lessonTagEntities.toString());
+      List<TagEntity> tagEntities =
+          tagId.stream()
+              .map(
+                  id ->
+                      tagRepository
+                          .findById(id)
+                          .orElseThrow(() -> new NullValueException("404 not found this tag")))
+              .toList();
+      log.info("=====>tag entity: " + tagEntities.toString());
+      for (LessonTagEntity lessonTagEntity : lessonTagEntities) {
+        lessonTagEntity.setTagEntity(tagEntities.get(lessonTagEntities.indexOf(lessonTagEntity)));
+      }
+      lessonTagRepository.saveAll(lessonTagEntities);
     }
     if (contentLink != null) {
       lessonEntity.setContentLink(contentLink);
