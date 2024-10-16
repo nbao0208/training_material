@@ -49,6 +49,7 @@ public class SecurityConfiguration {
     // Will remove when integrate with Keycloak
     "/api/v1/authentication/**",
     "/api/v2/authentication/**",
+    "/api/v1/company/A/authentication/**"
   };
 
   @Bean

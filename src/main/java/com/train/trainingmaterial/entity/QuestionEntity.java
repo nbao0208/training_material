@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tm_question")
+@Table(name = "tm_question", schema = "public")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor

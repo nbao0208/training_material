@@ -3,6 +3,7 @@ package com.train.trainingmaterial.model.request.userAuth;
 import lombok.*;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterUserRequest {

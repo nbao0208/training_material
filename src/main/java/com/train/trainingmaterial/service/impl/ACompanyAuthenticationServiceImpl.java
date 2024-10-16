@@ -8,39 +8,30 @@ import com.train.trainingmaterial.model.request.userAuth.RegisterUserRequest;
 import com.train.trainingmaterial.model.response.user_account.LogInUserResponse;
 import com.train.trainingmaterial.model.response.user_account.RegisterUserResponse;
 import com.train.trainingmaterial.service.AuthenticationService;
-import com.train.trainingmaterial.shared.constants.ErrorMessage;
-import com.train.trainingmaterial.shared.enums.ErrorCodes;
-import com.train.trainingmaterial.shared.exception.WrongValueException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service("authenticationService")
+@Service("aCompanyAuthenticationService")
 @RequiredArgsConstructor
-public class AuthenticationServiceImpl implements AuthenticationService {
-  private final AuthenticationDto authenticationDto;
+public class ACompanyAuthenticationServiceImpl implements AuthenticationService {
+  private final AuthenticationDto aCompanyAuthenticationDto;
 
   @Override
   public Response<LogInUserResponse> logInUser(LogInUserRequest request) {
-    return Response.<LogInUserResponse>builder()
-        .id(UUID.randomUUID().toString())
-        .data(authenticationDto.logInUser(request))
-        .build();
+    return null;
   }
 
   @Override
   public Response<RegisterUserResponse> registerUser(RegisterUserRequest request) {
-    if (!request.getPassword().equals(request.getRewritePassword())) {
-      throw new WrongValueException(ErrorMessage.AUTHENTICATE_FAILED, ErrorCodes.AUTHENTICATION_ERROR);
-    }
-    return Response.<RegisterUserResponse>builder()
-        .id(UUID.randomUUID().toString())
-        .data(authenticationDto.registerUser(request))
-        .build();
+    return null;
   }
 
   @Override
   public Response<RegisterUserResponse> registerAUser(RegisterAUserRequest request) {
-    return null;
+    return Response.<RegisterUserResponse>builder()
+        .id(UUID.randomUUID().toString())
+        .data(aCompanyAuthenticationDto.registerUser(request))
+        .build();
   }
 }

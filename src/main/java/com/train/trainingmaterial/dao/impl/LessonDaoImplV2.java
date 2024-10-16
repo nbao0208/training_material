@@ -10,7 +10,9 @@ import com.train.trainingmaterial.model.response.lesson.LessonDetailResponse;
 import com.train.trainingmaterial.model.test.Test;
 import com.train.trainingmaterial.model.user.Lesson;
 import com.train.trainingmaterial.repository.*;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.GroupID;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import com.train.trainingmaterial.shared.enums.LessonStatus;
 import com.train.trainingmaterial.shared.enums.PassingLevel;
 import com.train.trainingmaterial.shared.exception.NullValueException;
@@ -44,7 +46,7 @@ public class LessonDaoImplV2 implements LessonDao {
   @Override
   public <T> LessonDetailResponse getLesson(T lessonId, Long userId) {
     if (!this.isUserExists(userId)) {
-      throw new NullValueException("User does not exist");
+      throw new NullValueException(ErrorMessage.USER_NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR);
     }
     log.info(lessonId.toString());
     LessonDocument lesson = this.findLessonById((String) lessonId);
@@ -89,14 +91,14 @@ public class LessonDaoImplV2 implements LessonDao {
     try {
       if (!this.isDoneEnoughTestInLesson(user, lesson, lessonId)) {
         throw new WrongValueException(
-            "this user has not done enough test of the lesson with id " + lessonId);
+            ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
       }
 
       if (!this.isHaveEnoughQualificationOfEachTest(user, lessonId)) {
-        throw new WrongValueException("User have some tests are not qualified to pass the lesson");
+        throw new WrongValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
       }
     } catch (NullPointerException e) {
-      throw new NullPointerException("404 not found available");
+      throw new NullPointerException(ErrorMessage.NOT_FOUND);
     }
     this.updateStatusOfLessonForUser(userId, lessonId);
     return true;
@@ -138,7 +140,7 @@ public class LessonDaoImplV2 implements LessonDao {
       String intro,
       Integer timeRemaining) {
     if (!this.isValidToTakeAction(userId)) {
-      throw new WrongValueException("This user does not have enough authentication");
+      throw new WrongValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     this.updateLessonToDB(
         (String) lessonId, categoryId, tagId, contentLink, title, intro, timeRemaining);
@@ -160,7 +162,7 @@ public class LessonDaoImplV2 implements LessonDao {
     ObjectId lessonObjectId = new ObjectId(lessonId);
     return lessonRepositoryMongo
         .findById(lessonObjectId)
-        .orElseThrow(() -> new NullValueException("404 not found"));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
   }
 
   private UserDocument findUserById(Long userId) {
@@ -219,7 +221,7 @@ public class LessonDaoImplV2 implements LessonDao {
   private UserDocument findUserLessonByUserIdAndLessonId(Long userId, String lessonId) {
     return userRepositoryMongodb
         .findLearnedUserLearnExactQuestionBy(userId, lessonId)
-        .orElseThrow(() -> new NullValueException("You didn't learn this lesson before"));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS,ErrorCodes.PERMISSION_DENIED));
   }
 
   private LocalTime timeBetween(LocalTime startTime, LocalTime endTime) {

@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "tm_user_account")
+@Table(name = "tm_user_account", schema = "public")
 public class UserAccountEntity extends BaseEntity implements UserDetails {
   @ManyToOne
   @JoinColumn(

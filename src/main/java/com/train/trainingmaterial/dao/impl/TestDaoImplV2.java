@@ -20,7 +20,9 @@ import com.train.trainingmaterial.repository.LessonRepositoryMongo;
 import com.train.trainingmaterial.repository.TestRepositoryMongo;
 import com.train.trainingmaterial.repository.UserGroupRepository;
 import com.train.trainingmaterial.repository.UserRepositoryMongo;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.GroupID;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import com.train.trainingmaterial.shared.enums.PassingLevel;
 import com.train.trainingmaterial.shared.enums.SpecialOrderNumber;
 import com.train.trainingmaterial.shared.exception.NullValueException;
@@ -63,11 +65,11 @@ public class TestDaoImplV2 implements TestDao {
       String description,
       List<com.train.trainingmaterial.model.test.Question> questions) {
     if (!this.checkValidUser(userId)) {
-      throw new NullValueException("Student don't have enough authentication");
+      throw new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     ObjectId objectId = new ObjectId(lessonId);
     if (!this.isLessonExist(objectId)) {
-      throw new NullValueException("404 not found this lesson with id " + lessonId);
+      throw new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR);
     }
     TestDocument test = this.saveTestToDatabase(title, description, questions);
     this.addTestIdToLesson(objectId, test);
@@ -94,7 +96,7 @@ public class TestDaoImplV2 implements TestDao {
       String newDescription,
       List<com.train.trainingmaterial.model.test.Question> newQuestions) {
     if (!this.checkValidUser(userId)) {
-      throw new NullValueException("this user do not have enough authentication");
+      throw new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     TestDocument testDocument = this.findTestById(testId);
     this.modifyTestWithGivingFields(testDocument, newTitle, newDescription, newQuestions);
@@ -113,7 +115,7 @@ public class TestDaoImplV2 implements TestDao {
     UserDocument user = this.findUserHaveLearned(userId);
     TestDocument test = this.findTestById(testId);
     if (!this.isLearnTheLessonOfTheTest(lessonId, testId, user)) {
-      throw new NullValueException("User has not learn the lesson of the test with id " + testId);
+      throw new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     return this.takeQuestionsFromTest(test);
   }
@@ -132,11 +134,11 @@ public class TestDaoImplV2 implements TestDao {
       List<SelectedAnswerPerQuestion> selectedAnswerPerQuestions) {
     UserDocument user = this.findUserHaveLearned(userId);
     if (!this.isLearnTheLessonOfTheTest(lessonId, testId, user)) {
-      throw new NullValueException("User has not learn the lesson of the test with id " + testId);
+      throw new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     TestDocument test = this.findTestById(testId);
     if (!this.isDoneAllTheQuestion(test, selectedAnswerPerQuestions)) {
-      throw new WrongValueException("User did not match all the question");
+      throw new WrongValueException(ErrorMessage.HAVE_NOT_FINISHED_YET, ErrorCodes.PERMISSION_DENIED);
     }
     float score =
         this.calculateScore(
@@ -155,7 +157,7 @@ public class TestDaoImplV2 implements TestDao {
       String testId, Long userId, String lessonId) {
     UserDocument user = this.findUserHaveLearned(userId);
     if (!this.isLearnTheLessonOfTheTest(lessonId, testId, user)) {
-      throw new WrongValueException("User did not learn the lesson of the test with id " + testId);
+      throw new WrongValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     TestDocument test = this.findTestById(testId);
     List<Test> testsUserDidInLesson = this.takeAllTestsUserDidInLesson(user, testId, lessonId);
@@ -210,7 +212,7 @@ public class TestDaoImplV2 implements TestDao {
     ObjectId objectId = new ObjectId(testId);
     return testRepositoryMongo
         .findById(objectId)
-        .orElseThrow(() -> new NullValueException("do not exist test with id " + testId));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR));
   }
 
   private void modifyTestWithGivingFields(
@@ -227,7 +229,7 @@ public class TestDaoImplV2 implements TestDao {
   private UserDocument findUserHaveLearned(Long userId) {
     return userRepositoryMongo
         .findLearnedUserById(userId)
-        .orElseThrow(() -> new NullValueException("User has not learned!!!"));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED));
   }
 
   private boolean isLearnTheLessonOfTheTest(String lessonId, String testId, UserDocument user) {
@@ -241,7 +243,7 @@ public class TestDaoImplV2 implements TestDao {
     ObjectId objectId = new ObjectId(lessonId);
     return lessonRepositoryMongo
         .findById(objectId)
-        .orElseThrow(() -> new NullValueException("404 not found lesson with id " + lessonId));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
   }
 
   private List<QuestionWithNoCorrectAnswer> takeQuestionsFromTest(TestDocument test) {

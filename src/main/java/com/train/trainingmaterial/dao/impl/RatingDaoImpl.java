@@ -3,7 +3,9 @@ package com.train.trainingmaterial.dao.impl;
 import com.train.trainingmaterial.dao.RatingDao;
 import com.train.trainingmaterial.entity.*;
 import com.train.trainingmaterial.repository.*;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.MessageResponseForRating;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import com.train.trainingmaterial.shared.enums.LessonStatus;
 import com.train.trainingmaterial.shared.enums.RatingLevel;
 import com.train.trainingmaterial.shared.exception.NullValueException;
@@ -52,9 +54,9 @@ public class RatingDaoImpl implements RatingDao {
     UserLessonEntity userLesson =
         userLessonRepository
             .findByLessonIdAndUserId(lessonId, userId)
-            .orElseThrow(() -> new NullValueException("this user is still not learning lesson"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS,ErrorCodes.PERMISSION_DENIED));
     if (!this.isCompleteTheLesson(userLesson)) {
-      throw new WrongValueException("this user might not complete the lesson so can not rating");
+      throw new WrongValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     return userLesson;
   }
@@ -67,7 +69,7 @@ public class RatingDaoImpl implements RatingDao {
     RatingEntity ratingEntity =
         ratingRepository
             .findById(ratingId)
-            .orElseThrow(() -> new NullValueException("404 not found this rating"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR));
     if (ratingEntity.getLevel() <= RatingLevel.THREE.getLevel()) {
       return MessageResponseForRating.UNDER_THIRD_LEVEL_MESSAGE;
     }
@@ -112,7 +114,7 @@ public class RatingDaoImpl implements RatingDao {
     LessonEntity lessonEntity =
         lessonRepository
             .findById(lessonId)
-            .orElseThrow(() -> new NullValueException("404 not found this lesson"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR));
     List<LessonCommentRatingEntity> lessonCommentRating =
         commentRatingEntities.stream()
             .map(

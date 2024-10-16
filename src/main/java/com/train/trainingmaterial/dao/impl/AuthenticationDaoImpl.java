@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("authenticationDao")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthenticationDaoImpl implements AuthenticationDao {
@@ -49,6 +49,17 @@ public class AuthenticationDaoImpl implements AuthenticationDao {
       String password) {
     return this.saveRegisteredUser(
         firstName, middleName, lastName, dob, address, nationalID, account, password);
+  }
+
+  @Override
+  public boolean registerUser(
+      String fullName,
+      String citizenId,
+      String address,
+      LocalDate dob,
+      String position,
+      LocalDate startDay) {
+    return false;
   }
 
   private UserAccountEntity getUserAccountEntityByUsername(String username) {

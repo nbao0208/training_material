@@ -4,7 +4,9 @@ import com.train.trainingmaterial.entity.UserAccountEntity;
 import com.train.trainingmaterial.repository.UserAccountRepository;
 import com.train.trainingmaterial.service.JwtService;
 import com.train.trainingmaterial.shared.constants.CacheNames;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.WhiteListRequest;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     if (authorizationHeaderField == null || !authorizationHeaderField.startsWith("Bearer ")) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       response.getWriter().write("Invalid JWT token");
-      throw new ServletException("Invalid JWT token");
+      throw new ServletException(ErrorMessage.INVALID_TOKEN);
     }
 
     String jwt = authorizationHeaderField.substring("Bearer ".length());
@@ -57,15 +59,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     assert tokenCache != null;
 
     if (!jwtService.isTokenValid(jwt) || tokenCache.get(userId) == null) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      response.getWriter().write("Invalid token or maybe out of permissions");
-      throw new ServletException("Invalid token or maybe out of permissions");
+      throw new ServletException(ErrorMessage.INVALID_TOKEN);
     }
 
     UserAccountEntity userAccount =
         userAccountRepository
             .findByAccount(jwtService.extractUsername(jwt))
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.USER_NOT_FOUND));
     if (SecurityContextHolder.getContext().getAuthentication() == null) {
       UsernamePasswordAuthenticationToken authenticatedToken =
           new UsernamePasswordAuthenticationToken(userAccount, null, userAccount.getAuthorities());

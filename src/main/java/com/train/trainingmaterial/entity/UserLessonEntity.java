@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import lombok.*;
 
 @Entity
-@Table(name = "tm_user_lesson")
+@Table(name = "tm_user_lesson", schema = "public")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor

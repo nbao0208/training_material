@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tm_lesson_tag")
+@Table(name = "tm_lesson_tag", schema = "public")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder

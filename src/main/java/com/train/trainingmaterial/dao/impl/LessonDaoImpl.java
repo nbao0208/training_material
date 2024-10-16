@@ -5,7 +5,9 @@ import com.train.trainingmaterial.entity.*;
 import com.train.trainingmaterial.model.response.lesson.GetLessonReportResponse;
 import com.train.trainingmaterial.model.response.lesson.LessonDetailResponse;
 import com.train.trainingmaterial.repository.*;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.GroupID;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import com.train.trainingmaterial.shared.enums.LessonStatus;
 import com.train.trainingmaterial.shared.enums.RankingValue;
 import com.train.trainingmaterial.shared.exception.NullValueException;
@@ -97,7 +99,7 @@ public class LessonDaoImpl implements LessonDao {
       String intro,
       int timeRemaining) {
     if (!this.isValidToTakeAction(userId)) {
-      throw new WrongValueException("This user can't have enough level to create lesson");
+      throw new WrongValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     CategoryEntity categoryEntity =
         categoryRepository
@@ -118,7 +120,7 @@ public class LessonDaoImpl implements LessonDao {
       String intro,
       Integer timeRemaining) {
     if (!this.isValidToTakeAction(userId)) {
-      throw new NullValueException("404 not found");
+      throw new NullValueException(ErrorMessage.NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR);
     }
     this.updateLessonToDb(
         (Long) lessonId, categoryId, tagId, contentLink, title, intro, timeRemaining);
@@ -152,7 +154,7 @@ public class LessonDaoImpl implements LessonDao {
 
   private String rankingFeedback(int evaluation) {
     if (evaluation <= 0 || evaluation > RankingValue.FIVE_STARTS.getStar()) {
-      throw new WrongValueException("Error value of evaluation");
+      throw new WrongValueException(ErrorMessage.OUT_OF_RANGE, ErrorCodes.WRONG_VALUE_ERROR);
     }
     if (evaluation <= RankingValue.TWO_STARS.getStar()) {
       return "We will get better next time";
@@ -186,7 +188,7 @@ public class LessonDaoImpl implements LessonDao {
     UserLessonEntity userLesson =
         userLessonRepository
             .findByLessonIdAndUserId(lessonId, userId)
-            .orElseThrow(() -> new NullValueException("OOps not found @@"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
     LocalTime timeLearning = this.timeBetween(userLesson.getModified(), OffsetDateTime.now());
     userLesson.setTimeReading(
         userLesson
@@ -200,19 +202,19 @@ public class LessonDaoImpl implements LessonDao {
   private UserEntity findUserByUserId(Long userId) {
     return userRepository
         .findById(userId)
-        .orElseThrow(() -> new NullValueException("Don't find any user with id " + userId));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.USER_NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR));
   }
 
   public LessonEntity findLessonByLessonId(Long lessonId) {
     return lessonRepository
         .findById(lessonId)
-        .orElseThrow(() -> new NullValueException("Don't find any lesson with id " + lessonId));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
   }
 
   private UserLessonEntity findUserLessonByUserAndLessonId(Long userId, Long lessonId) {
     return userLessonRepository
         .findByLessonIdAndUserId(lessonId, userId)
-        .orElseThrow(() -> new NullValueException("this user have not learnt before"));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS,ErrorCodes.PERMISSION_DENIED));
   }
 
   private List<CommentRatingEntity> findCommentRatingByUserLessonId(Long userLessonId) {

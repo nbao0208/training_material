@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "tm_group")
+@Table(name = "tm_group", schema = "public")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class GroupEntity extends BaseEntity {

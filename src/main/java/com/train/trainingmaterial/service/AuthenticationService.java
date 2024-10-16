@@ -2,6 +2,7 @@ package com.train.trainingmaterial.service;
 
 import com.train.trainingmaterial.model.common.Response;
 import com.train.trainingmaterial.model.request.userAuth.LogInUserRequest;
+import com.train.trainingmaterial.model.request.userAuth.RegisterAUserRequest;
 import com.train.trainingmaterial.model.request.userAuth.RegisterUserRequest;
 import com.train.trainingmaterial.model.response.user_account.LogInUserResponse;
 import com.train.trainingmaterial.model.response.user_account.RegisterUserResponse;
@@ -12,4 +13,6 @@ public interface AuthenticationService {
   Response<LogInUserResponse> logInUser(LogInUserRequest request);
 
   Response<RegisterUserResponse> registerUser(RegisterUserRequest request);
+
+  Response<RegisterUserResponse> registerAUser(RegisterAUserRequest request);
 }

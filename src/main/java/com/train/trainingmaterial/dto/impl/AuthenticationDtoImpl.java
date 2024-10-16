@@ -3,6 +3,7 @@ package com.train.trainingmaterial.dto.impl;
 import com.train.trainingmaterial.dao.AuthenticationDao;
 import com.train.trainingmaterial.dto.AuthenticationDto;
 import com.train.trainingmaterial.model.request.userAuth.LogInUserRequest;
+import com.train.trainingmaterial.model.request.userAuth.RegisterAUserRequest;
 import com.train.trainingmaterial.model.request.userAuth.RegisterUserRequest;
 import com.train.trainingmaterial.model.response.user_account.LogInUserResponse;
 import com.train.trainingmaterial.model.response.user_account.RegisterUserResponse;
@@ -10,7 +11,7 @@ import com.train.trainingmaterial.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("authenticationDto")
 @RequiredArgsConstructor
 public class AuthenticationDtoImpl implements AuthenticationDto {
   private final AuthenticationDao authenticationDao;
@@ -42,5 +43,10 @@ public class AuthenticationDtoImpl implements AuthenticationDto {
                     request.getAccount(),
                     request.getPassword())))
         .build();
+  }
+
+  @Override
+  public RegisterUserResponse registerUser(RegisterAUserRequest request) {
+    return null;
   }
 }

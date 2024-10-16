@@ -7,7 +7,9 @@ import com.train.trainingmaterial.model.request.test.Question;
 import com.train.trainingmaterial.model.response.test.*;
 import com.train.trainingmaterial.model.test.SelectedAnswerPerQuestion;
 import com.train.trainingmaterial.repository.*;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.GroupID;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import com.train.trainingmaterial.shared.enums.PassingLevel;
 import com.train.trainingmaterial.shared.exception.NullValueException;
 import com.train.trainingmaterial.shared.exception.WrongValueException;
@@ -40,7 +42,7 @@ public class TestDaoImpl implements TestDao {
     LessonEntity lessonEntity =
         lessonRepository
             .findById(lessonId)
-            .orElseThrow(() -> new NullValueException("Lesson with id " + lessonId + " not found"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
     TestEntity testEntity =
         TestEntity.builder().lessonEntity(lessonEntity).title(title).rule(rule).build();
     testRepository.save(testEntity);
@@ -73,7 +75,7 @@ public class TestDaoImpl implements TestDao {
       return false;
     }
     TestEntity test =
-        testRepository.findById(testId).orElseThrow(() -> new NullValueException("404 not found"));
+        testRepository.findById(testId).orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
     this.saveDefaultFieldOf(test, title, rule);
     if (!deleteQuestionId.isEmpty()) {
       questionRepository.deleteByListOfId(deleteQuestionId);
@@ -104,11 +106,11 @@ public class TestDaoImpl implements TestDao {
   public List<Map.Entry<QuestionEntity, List<AnswerEntity>>> getTest(
       Long testId, Long userId, Long lessonId) {
     if (!this.isExist(lessonId, userId)) {
-      throw new NullValueException("This user has not learnt before");
+      throw new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS,ErrorCodes.PERMISSION_DENIED);
     }
     List<QuestionEntity> questions = questionRepository.findByTestId(testId);
     if (questions.isEmpty()) {
-      throw new NullValueException("404 not found");
+      throw new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR);
     }
     List<Map.Entry<QuestionEntity, List<AnswerEntity>>> result = new ArrayList<>();
     for (QuestionEntity question : questions) {
@@ -129,7 +131,7 @@ public class TestDaoImpl implements TestDao {
       Long testId, Long lessonId, Long userId, List<Map<Long, Boolean>> answerIds) {
     for (Map<Long, Boolean> answerId : answerIds) {
       if (this.isQuestionEmpty(answerId)) {
-        throw new NullValueException("It is not enough questions, please answers all questions");
+        throw new NullValueException(ErrorMessage.HAVE_NOT_FINISHED_YET,ErrorCodes.NOT_FOUND_ERROR);
       }
     }
     List<Long> userAnswers = new ArrayList<>();
@@ -157,7 +159,7 @@ public class TestDaoImpl implements TestDao {
     List<UserTestEntity> userTests =
         this.findUserTestByUserLessonAndTestId(userLesson.getId(), testId);
     if (userTests.isEmpty()) {
-      throw new NullValueException("You had not do the test");
+      throw new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED);
     }
     List<QuestionEntity> questions = questionRepository.findByTestId(testId);
     List<List<AnswerEntity>> answersOfAllQuestions =
@@ -179,7 +181,7 @@ public class TestDaoImpl implements TestDao {
     List<UserTestEntity> userTest =
         this.findUserTestByUserLessonAndTestId(userLesson.getId(), testId);
     if (!this.isDoneTest(userTest)) {
-      throw new WrongValueException("user has not done any test before");
+      throw new WrongValueException(ErrorMessage.HAVE_NOT_FINISHED_YET,ErrorCodes.NOT_FOUND_ERROR);
     }
     List<QuestionEntity> questionEntities = questionRepository.findByTestId(testId);
     int questions = questionEntities.size();
@@ -279,7 +281,7 @@ public class TestDaoImpl implements TestDao {
         AnswerEntity answer =
             answerRepository
                 .findById(entry.getKey())
-                .orElseThrow(() -> new NullValueException("404 not found"));
+                .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
         if (answer.isCorrect()) {
           correctAnswerInQuestion++;
         }
@@ -307,7 +309,7 @@ public class TestDaoImpl implements TestDao {
       AnswerEntity answer =
           answerRepository
               .findById(modifyQuestionDetails.getModifyAnswerId().get(i))
-              .orElseThrow(() -> new NullValueException("404 not found"));
+              .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND,ErrorCodes.NOT_FOUND_ERROR));
       answer.setAnswer(modifyQuestionDetails.getModifyAnswers().get(i).getKey());
       answer.setCorrect(modifyQuestionDetails.getModifyAnswers().get(i).getValue());
       modifyAnswersForSave.add(answer);
@@ -338,7 +340,7 @@ public class TestDaoImpl implements TestDao {
         questionRepository.findByListOfQuestionId(
             modifyQuestionDetails.getQuestionIdForFundamentalField());
     if (questions.isEmpty()) {
-      throw new NullValueException("Don't have any question with some ids");
+      throw new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR);
     }
     for (int i = 0; i < questions.size(); i++) {
       questions.get(i).setQuestion(modifyQuestionDetails.getQuestions().get(i));
@@ -351,11 +353,11 @@ public class TestDaoImpl implements TestDao {
     UserLessonEntity userLesson =
         userLessonRepository
             .findByLessonIdAndUserId(lessonId, userId)
-            .orElseThrow(() -> new NullValueException("404 not found"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
     TestEntity test =
         testRepository
             .findById(testId)
-            .orElseThrow(() -> new NullValueException("404 not found this this"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
     UserTestEntity userTest =
         UserTestEntity.builder()
             .userLessonEntity(userLesson)
@@ -372,7 +374,7 @@ public class TestDaoImpl implements TestDao {
       AnswerEntity answer =
           answerRepository
               .findById(userAnswer)
-              .orElseThrow(() -> new NullValueException("404 not found"));
+              .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
       userAnswerRepository.save(
           UserAnswerEntity.builder().userTestEntity(userTest).answerEntity(answer).build());
     }
@@ -423,7 +425,7 @@ public class TestDaoImpl implements TestDao {
   private UserLessonEntity findUserLessonByUserAndLessonId(Long userId, Long lessonId) {
     return userLessonRepository
         .findByLessonIdAndUserId(lessonId, userId)
-        .orElseThrow(() -> new NullValueException("this user has not learnt before"));
+        .orElseThrow(() -> new NullValueException(ErrorMessage.DONT_HAVE_ENOUGH_PERMISSIONS, ErrorCodes.PERMISSION_DENIED));
   }
 
   private List<UserTestEntity> findUserTestByUserLessonAndTestId(Long userLessonId, Long testId) {
@@ -434,7 +436,7 @@ public class TestDaoImpl implements TestDao {
     UserEntity user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new NullValueException("404 not found this user"));
+            .orElseThrow(() -> new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR));
     return user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName();
   }
 

@@ -2,6 +2,7 @@ package com.train.trainingmaterial.config;
 
 import com.train.trainingmaterial.service.JwtService;
 import com.train.trainingmaterial.shared.constants.CacheNames;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
@@ -23,7 +24,7 @@ public class LogOutConfiguration {
     return (request, response, authentication) -> {
       String authorization = request.getHeader("Authorization");
       if (authorization == null || !authorization.startsWith("Bearer ")) {
-        throw new BadCredentialsException("Invalid token");
+        throw new BadCredentialsException(ErrorMessage.INVALID_TOKEN);
       }
 
       String token = authorization.substring(7);
@@ -32,7 +33,7 @@ public class LogOutConfiguration {
       assert tokenCache != null;
 
       if (!jwtService.isTokenValid(token) || tokenCache.get(userId) == null) {
-        throw new BadCredentialsException("Invalid token or token does have enough permissions");
+        throw new BadCredentialsException(ErrorMessage.INVALID_TOKEN);
       }
       // delete the cache of token or can mean that's the request's life
       tokenCache.evict(userId);

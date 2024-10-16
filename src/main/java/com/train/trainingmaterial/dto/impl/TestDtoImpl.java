@@ -6,7 +6,9 @@ import com.train.trainingmaterial.entity.AnswerEntity;
 import com.train.trainingmaterial.entity.QuestionEntity;
 import com.train.trainingmaterial.model.request.test.*;
 import com.train.trainingmaterial.model.response.test.*;
+import com.train.trainingmaterial.shared.constants.ErrorMessage;
 import com.train.trainingmaterial.shared.constants.MessageResponseForTheSubmittedTest;
+import com.train.trainingmaterial.shared.enums.ErrorCodes;
 import com.train.trainingmaterial.shared.enums.PassingLevel;
 import com.train.trainingmaterial.shared.exception.NullValueException;
 import java.util.*;
@@ -111,7 +113,7 @@ public class TestDtoImpl implements TestDto {
   private List<QuestionWithNoCorrectAnswer> generateFrom(
       List<Map.Entry<QuestionEntity, List<AnswerEntity>>> questions) {
     if (questions.isEmpty()) {
-      throw new NullValueException("404 not found");
+      throw new NullValueException(ErrorMessage.NOT_FOUND, ErrorCodes.NOT_FOUND_ERROR);
     }
     return questions.stream()
         .map(

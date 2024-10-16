@@ -3,14 +3,16 @@ package com.train.trainingmaterial.repository;
 import com.train.trainingmaterial.entity.UserEntity;
 import jakarta.persistence.OrderBy;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-  @Query("select u from UserEntity u where year (u.dob)=:yearBorn")
+  @Query("select u from AUserEntity u where year (u.dob)=:yearBorn")
   @OrderBy("last_name asc")
   List<UserEntity> findByYearBorn(@Param("yearBorn") int yearBorn);
+
   //  @Query( "update UserEntity u " +
   //          "set u.first_name=case when :#{#user.first_name} is not null then :#{#user.first_name}
   // else u.first_name end," +
@@ -28,4 +30,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
   //          "u.is_deleted=:#{#user._deleted} " +
   //          "where u.national_id=:#{#user.national_id}")
   //  void updateById(@Param("user") UserEntity user);
+
+  Optional<UserEntity> getByNationalId(String nationalId);
 }
